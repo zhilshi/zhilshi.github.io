@@ -237,26 +237,23 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 
 ##### 登录
 
-
 	- (void)loginInWithInfo:(id)userInfo
-	successBlock:(SuccessBlock) successBlock
-	failedBlock:(FailureBlock) faieldBlock
+				 successBlock:(SuccessBlock) successBlock
+	            failedBlock:(FailureBlock) faieldBlock
 	{
-	
-	[EzvizUser login:userInfo success:^(id request, id responseObject) {
-	这里就是需要的逻辑处理
-	// 包括更新本地数据缓存
-	// 需要进行的关联请求操作
-	// .. 处理完跟登录成功绑定的相关业务逻辑后 回调展示器，进行相关展示操作
-	successBlock(nil);
-	
-	} failure:^(NSError *error, NSString *message) {
-	// 登录异常 我们需要根据错误码进行处理
-	// 萤石云APP需要根据各种错误码进行导航跳转进入不同处理流程，此外无多余的业务逻辑
-	faieldBlock(error);
-	}];
+		[EzvizUser login:userInfo success:^(id request, id responseObject) {
+			//这里就是需要的逻辑处理
+			// 包括更新本地数据缓存
+			// 需要进行的关联请求操作
+			// .. 处理完跟登录成功绑定的相关业务逻辑后 回调展示器，进行相关展示操作
+			successBlock(nil);
+		
+		} failure:^(NSError *error, NSString *message) {
+			// 登录异常 我们需要根据错误码进行处理
+			// 萤石云APP需要根据各种错误码进行导航跳转进入不同处理流程，此外无多余的业务逻辑
+			faieldBlock(error);
+		}];
 	}
-
 
 ##### 第三方登录
 
@@ -265,16 +262,16 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 	successBlock:(SuccessBlock) successBlock
 	failedBlock:(FailureBlock) faieldBlock
 	{
-	// 有一个单独的第三方处理中心 获取对应的token userid等相关信息
-	[YSThirdLogin logininWithLoginType:loginType success:^(id userInfo) {
-	// 根据返回的数据，调用账号密码登录接口
-	[self loginInWithInfo:userInfo 
-	successBlock:successBlock 
-	faieldBlock:faieldBlock];
-	
-	} failure:^(NSError *error) {
-	faieldBlock(error);
-	}];
+		// 有一个单独的第三方处理中心 获取对应的token userid等相关信息
+		[YSThirdLogin logininWithLoginType:loginType success:^(id userInfo) {
+		// 根据返回的数据，调用账号密码登录接口
+			[self loginInWithInfo:userInfo 
+			successBlock:successBlock 
+			faieldBlock:faieldBlock];
+		
+		} failure:^(NSError *error) {
+			faieldBlock(error);
+		}];
 	}
 
 
@@ -282,12 +279,12 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 
 
 	- (void)fetchAvatarImageWithAccount:(NSString *)accountStr
-	successBlock:(SuccessBlock) successBlock
-	failedBlock:(FailureBlock) faieldBlock
+							   successBlock:(SuccessBlock) successBlock
+					           failedBlock:(FailureBlock) faieldBlock
 	{
-	// 根据accontStr  获取数据库或本地文件、缓存对应的头像
-	// 或者本地无缓存则数据请求等
-	// 根据处理 回调
+		// 根据accontStr  获取数据库或本地文件、缓存对应的头像
+		// 或者本地无缓存则数据请求等
+		// 根据处理 回调
 	}
 
 
@@ -327,44 +324,43 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 	*/
 	- (void)loginInWithInfo:(id)userInfo
 	{
-	//检查userInfo格式
-	if (![YSCheckFormart checkUserInfo:userInfo key:kUserInfoKey])
-	{
-	//格式错误，则进行页面提示 所有的提示基本上都可以在展示器中进行
-	[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:@"输入格式错误"];
-	return;
+		//检查userInfo格式
+		if (![YSCheckFormart checkUserInfo:userInfo key:kUserInfoKey])
+		{
+			//格式错误，则进行页面提示 所有的提示基本上都可以在展示器中进行
+			[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:@"输入格式错误"];
+			return;
 	}
 	
 	//正确，则调用交互器
 	
-	[self.loginInteractor loginInWithInfo:userInfo successBlock:^(id responseObject)
+	[self.loginInteractor loginInWithInfo:userInfo 								  successBlock:^(id responseObject)
 	{
-	// 登录成功 交给线框进行调转
-	[self showViewControllerWithViewControllerKey:kYSTabbarViewControllerKey 
-	params:nil];
-	}
-	failedBlock:^ (NSError *error)
-	{
-	// 1.登录失败 进行错误提示
-	[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:[error domain]];
-	// 2.根据错误码，进行异常流程处理 因为异常处理流程主要涉及到页面的跳转和错误的提示 因此将该驱动逻辑放在展示器中是最合适的地方
-	[self routerViewWithLoginErrorCode:[error code]];
-	}];
+		// 登录成功 交给线框进行调转
+		[self showViewControllerWithViewControllerKey:kYSTabbarViewControllerKey 
+		params:nil];
+		}
+	failedBlock:^ (NSError *error){
+		// 1.登录失败 进行错误提示
+		[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:[error domain]];
+		// 2.根据错误码，进行异常流程处理 因为异常处理流程主要涉及到页面的跳转和错误的提示 因此将该驱动逻辑放在展示器中是最合适的地方
+		[self routerViewWithLoginErrorCode:[error code]];
+		}];
 	}
 	
 	//  忘记密码操作
 	- (void)forgetPassword
 	{
-	//单纯的页面跳转，直接交给线框进行路由分发
-	[self showViewControllerWithViewControllerKey:kYSRecoverViewControllerKey 
-	params:nil];
+		//单纯的页面跳转，直接交给线框进行路由分发
+		[self showViewControllerWithViewControllerKey:kYSRecoverViewControllerKey 
+		params:nil];
 	}
 	
 	//  注册账户操作
 	- (void)registAccount
 	{
-	[self showViewControllerWithViewControllerKey:kYSRegistViewControllerKey 
-	params:nil];
+		[self showViewControllerWithViewControllerKey:kYSRegistViewControllerKey 
+		params:nil];
 	}  
 	
 	/**
@@ -374,21 +370,21 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 	*/
 	- (void)thirdLoginWithLoginType:(YSThirdLoginType)loginType
 	{
-	// 与登录几乎一致
-	[self.loginInteractor  thirdLoginWithLoginType:loginType
-	viewController:self.userInterface
-	successBlock:^(id responseObject){
-	// 登录成功 交给线框进行调转
-	[self showViewControllerWithKey:kYSTabbarViewControllerKey 
-	params:nil];
-	}
-	failedBlock:^ (NSError *error)
-	{
-	// 1.登录失败 进行错误提示
-	[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:[error domain]];
-	// 2.根据错误码，进行异常流程处理 因为异常处理流程主要涉及到页面的跳转和错误的提示 因此将该驱动逻辑放在展示器中是最合适的地方
-	[self routerViewWithLoginErrorCode:[error code]];
-	}];
+		// 与登录几乎一致
+		[self.loginInteractor  thirdLoginWithLoginType:loginType
+		viewController:self.userInterface
+		successBlock:^(id responseObject){
+			// 登录成功 交给线框进行调转
+			[self showViewControllerWithKey:kYSTabbarViewControllerKey 
+			params:nil];
+		}
+		failedBlock:^ (NSError *error)
+		{
+			// 1.登录失败 进行错误提示
+			[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:[error domain]];
+			// 2.根据错误码，进行异常流程处理 因为异常处理流程主要涉及到页面的跳转和错误的提示 因此将该驱动逻辑放在展示器中是最合适的地方
+			[self routerViewWithLoginErrorCode:[error code]];
+		}];
 	}
 	
 	//...略
@@ -396,16 +392,16 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 	pragma mark -private
 	- (void)showViewControllerWithKey:(NSString *)key params:(NSDictionary *)params
 	{
-	// 数据对象
-	YSMessageInfo *messageInfo = [YSMessageInfo initwihMessageName:key params:params];
-	// 页面跳转
-	[self.loginWireFrame routingViewController:self.userInterface 			   
-	messageOfPage:messageInfo];
+		// 数据对象
+		YSMessageInfo *messageInfo = [YSMessageInfo initwihMessageName:key params:params];
+		// 页面跳转
+		[self.loginWireFrame routingViewController:self.userInterface 			   
+		messageOfPage:messageInfo];
 	}
 	- (void)routerViewWithLoginErrorCode:(int)code
 	{
-	// 根据错误码进行路由分法 
-	// 略
+		// 根据错误码进行路由分法 
+		// 略
 	}
 
 
@@ -450,32 +446,32 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 	
 	#pragma mark － 视图控制器路由控制
 	- (void)routingViewController:(UIViewController*)ViewController
-	messageOfPage:(YSMessageInfo *)messager
+	                messageOfPage:(YSMessageInfo *)messager
 	{
-	NSParameterAssert(messager != nil);
-	NSParameterAssert(ViewController != nil);
-	
-	SEL selector = [self selectorOfClassName:messager.messageNameStr];
-	IMP imp      = [self  methodForSelector:selector];
-	void (*func)(id,SEL,UIViewController*,NSDictionary*) = (void*)imp;
-	func(self ,selector,ViewController,messager.paramsDic);
+		NSParameterAssert(messager != nil);
+		NSParameterAssert(ViewController != nil);
+		
+		SEL selector = [self selectorOfClassName:messager.messageNameStr];
+		IMP imp      = [self  methodForSelector:selector];
+		void (*func)(id,SEL,UIViewController*,NSDictionary*) = (void*)imp;
+		func(self ,selector,ViewController,messager.paramsDic);
 	}
 	
 	- (SEL)selectorOfClassName:(NSString *)messageName
 	{
-	static NSDictionary *selectordictionary = nil;
-	if(!selectordictionary)
-	{
-	selectordictionary = @{
-	
-	kShowRegistUserOneViewController:
-	[NSValue valueWithPointer:
-	@selector(showRegistUserOneViewController:params:)],
-	
-	kShowTabBarViewController:
-	[NSValue valueWithPointer:   @selector(showTabbarViewController:params:)]
-	
-	};
+		static NSDictionary *selectordictionary = nil;
+		if(!selectordictionary)
+		{
+			selectordictionary = @{
+			
+			kShowRegistUserOneViewController:
+			[NSValue valueWithPointer:
+			@selector(showRegistUserOneViewController:params:)],
+			
+			kShowTabBarViewController:
+			[NSValue valueWithPointer:   @selector(showTabbarViewController:params:)]
+		
+		};
 	}
 	
 	NSValue *value = [selectordictionary valueForKey:messageName];
@@ -485,17 +481,17 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 	
 	- (void)emptyMothedViewController:(UIViewController *)viewController params:(NSDictionary *)params
 	{
-	DDLogCError(@"不存在对应的选择器方法,请注意实现！");
+		DDLogCError(@"不存在对应的选择器方法,请注意实现！");
 	}
 	
 	- (void)showRegistUserOneViewController:(UIViewController *)viewController params:(NSDictionary *)params
 	{
-	//具体跳转处理  
+		//具体跳转处理  
 	}
 	
 	- (void)showTabbarViewController:(UIViewController *)viewController params:(NSDictionary *)params
 	{
-	//具体跳转处理  
+		//具体跳转处理  
 	}
 	...
 
@@ -517,18 +513,18 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 
 	+ (UIViewController *)YSLoginViewController
 	{
-	HIKLoginViewController *userInterface = [[HIKLoginViewController alloc]init];
-	YSLoginInteractor   *interactor       = [[YSLoginInteractor alloc]init];
-	YSLoginPresenter    *presenter        = [[YSLoginPresenter alloc]init];
-	YSLoginWireFrame    *wireFrame        = [[YSLoginWireFrame alloc]init];
-	//视图控制器引用展示器
-	userInterface.eventHander             = presenter;
-	//展示器分别引用视图控制器 交互器 线框 
-	presenter.userInterface               = userInterface;
-	presenter.loginInteractor             = interactor;
-	presenter.loginWireFrame              = wireFrame;
-	// 返回视图控制器
-	return userInterface;
+		HIKLoginViewController *userInterface = [[HIKLoginViewController alloc]init];
+		YSLoginInteractor   *interactor       = [[YSLoginInteractor alloc]init];
+		YSLoginPresenter    *presenter        = [[YSLoginPresenter alloc]init];
+		YSLoginWireFrame    *wireFrame        = [[YSLoginWireFrame alloc]init];
+		//视图控制器引用展示器
+		userInterface.eventHander             = presenter;
+		//展示器分别引用视图控制器 交互器 线框 
+		presenter.userInterface               = userInterface;
+		presenter.loginInteractor             = interactor;
+		presenter.loginWireFrame              = wireFrame;
+		// 返回视图控制器
+		return userInterface;
 	}
 
 
