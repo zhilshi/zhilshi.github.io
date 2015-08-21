@@ -5,8 +5,8 @@
     <description></description>
     <link>http://yourdomain.com/</link>
     <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Fri, 21 Aug 2015 23:34:12 +0800</pubDate>
-    <lastBuildDate>Fri, 21 Aug 2015 23:34:12 +0800</lastBuildDate>
+    <pubDate>Fri, 21 Aug 2015 23:37:08 +0800</pubDate>
+    <lastBuildDate>Fri, 21 Aug 2015 23:37:08 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -38,9 +38,7 @@ Debug Information Format = DWARF with dSYM File
     
       <item>
         <title>VIPER 浅谈</title>
-        <description>&lt;hr /&gt;
-
-&lt;h2 id=&quot;section&quot;&gt;架构腐朽&lt;/h2&gt;
+        <description>&lt;h3 id=&quot;section&quot;&gt;开发痛点&lt;/h3&gt;
 
 &lt;p&gt;在介绍之前，谈谈项目开发的痛点。&lt;/p&gt;
 
