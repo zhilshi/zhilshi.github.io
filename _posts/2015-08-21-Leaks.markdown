@@ -1,0 +1,22 @@
+---
+layout: post
+title:  "Leaks"
+date:   2015-08-21 22:45:00
+categories: iOS
+---
+
+###Leaks内存泄露调试无法定位到代码行
+
+今天用leaks调试内存泄露问题，发现leaks无法定位到具体的代码行，如下图所示:
+![](/images/Leaks/Leaks1.png)
+只显示具体的符号地址,点击进入显示下图
+![](/images/Leaks/Leaks2.png)
+一时奇怪了，以前项目leaks调试的时候一直没遇到这样的问题。后来右击一看，发现有load dSYM文件的选项。然后去build看了下，工程未生成对应的dSYM文件，导致无法符号化。
+查了下工程的build setting设:	
+	
+	Generate Debug Symbols   = Yes 
+	Debug Information Format = DWARF with dSYM File
+
+工程中的第二个选择被设置成了DWARF,所以导致未生成dSYM文件。一般项目新建，默认是生成dSYM文件的。写在这里给自己提个醒。
+
+
