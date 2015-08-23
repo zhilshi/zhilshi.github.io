@@ -5,8 +5,8 @@
     <description></description>
     <link>http://yourdomain.com/</link>
     <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Sun, 23 Aug 2015 13:24:27 +0800</pubDate>
-    <lastBuildDate>Sun, 23 Aug 2015 13:24:27 +0800</lastBuildDate>
+    <pubDate>Sun, 23 Aug 2015 20:01:22 +0800</pubDate>
+    <lastBuildDate>Sun, 23 Aug 2015 20:01:22 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -536,6 +536,13 @@ Debug Information Format = DWARF with dSYM File
 &lt;p&gt;&lt;img src=&quot;/images/viper/Login5.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 
 &lt;p&gt;是不是比较清晰了？我们首先分析了模块的核心功能，创建了YSLoginModuleInterface协议。依次将涉及的内容分为5个模块，每个模块只做一件事情，最后通工厂类方法，按照职责创建之间的依赖关系。只要你对VIPER有这样一个概念，那本篇的目的也就达到了。任何架构的学习和应用，也必须经过长久的实践和探索。&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;注意了,在模块引用中,我使用了strong强引用,会导致userinterface和presenter之间会存在循环
+强引用问题。
+但循环强引用并不是不好,针对你自己的模块进行抉择是否需要释放,比如有些模块在你APP中需要一直存
+在的。又比如登录模块在登录进去之后,不需要存在了,只要在userinterface里将presenter设置为
+nil打破循环强引用即可。
+&lt;/code&gt;&lt;/pre&gt;
 
 &lt;hr /&gt;
 
