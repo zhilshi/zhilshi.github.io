@@ -7,11 +7,43 @@ categories: iOS
 
 ### 开发痛点
 
-在介绍之前，谈谈项目开发的痛点。
+在开始介绍之前，有兴趣的朋友，可以看看陈金洲写的一篇博客，叫做架构腐化之谜，里面有几句话，深感认同：
 
-在一个多年迭代开发的项目中，只要项目依然活跃，必然带来需求的不断增长，业务扩张，人员频繁调动...巨大的交付压力，新员工的磨合阶段，文档的缺乏等等，不管项目之初的架构设计是多么合理，也会存在无法满足的情况，架构已然被腐朽。当你发现代码维护越来越困难，新功能的开发痛不欲生，一个问题的解决、一个需求的增加导致不可预测的新问题的出现，代码的耦合，程序的构建时间越来越长时...我们知道需要重构了.
+人们喜欢简洁。但这更多的看起来是一个谎言——没有多少团队能够自始至终保持简洁。人们喜欢简洁只是因为这个难以做到。并不是说人们不愿意如此。很多人都知道软件开发不比其他的劳动力密集型的行业——人越多，产量越大。《人月神话》中已经提到，项目增加更多的人，在提升工作产出的同时，也产生了混乱。短期内，这些混乱能够被团队通过各种形式消化；但从长期看来，随着团队人员的变动（新人加入，老人离开），以及人正常自然的遗忘曲线，代码库会逐渐失控，混乱无法被消化，而项目并不会停止，新功能不断的加入，架构就在一天天的过程中被腐蚀。
 
-至今为止，我们听过太多的架构名词，经典的MVC、三层架构(UI-BLL_DAL)、四层、五层、MVVM、HMVC、SOA(面向服务)等等，以及今天的主角--VIPER. 新技术的产生往往是针对解决某一个特定域而进行的尝试。那么，VIPER 是解决什么特定域的问题呢？或者说，我们经典的MVC架构，在长期的实践中带来哪些问题？
+人的理解总有一个边界，而需求和功能不会——今天的功能总比昨天的多；这个版本的功能总比上个版本的多。而在长时间的开发中，忘记之前的代码是正常的；忘记某些约定也是正常的。形成某些小而不经意的错误是正常的，在巨大的代码库中，这些小错误被忽视也是正常的。这些不断积攒的小小的不一致、错误，随着时间的积累，最终变得难以控制。
+
+	
+
+是的，**这就是痛点，无法避免的问题**。
+
+作者在分析导致该问题的同时，也提出了非常使用的解决方案，采用新技术、物理隔离、二进制依赖等，非常值得品味。
+
+值得一提的是，新技术的产生总是针对某个特定域的问题。而每个产品可能存在各种问题域，在特定的问题域之外，新技术远远没有成熟到完美应对的地步。但这不是我们不去思考、探索和验证新技术在解决我们特定问题域理由。
+
+​那么，面对前面提到的开发痛点？同学们可以想想，你目前在做的项目，给你带来了多少痛点呢？你是否也有着与我同样的感受？
+
+1. 项目构建时间越来越长？
+   
+2. 每次功能点的开发和版本迭代越来越困难？
+   
+3. 越来越臃肿的代码文件？
+   
+4. 问题越来越难以定位？
+   
+5. 改不玩的bug单？
+   
+6. ...
+   
+   ​
+
+如果你与我有一样的感受，那么说明是到了需要做出点改变的时候了。基本上，迭代一年以上的项目都有这个问题。很多时候，这种痛点带来的代价是产品质量的降低、项目周期的延长、程序猿的开发兴致降低等问题，最可怕的是这种问题一直在被忽视，程序猿在巨大的交付压力下也无心做出改变。
+
+上述的问题域太大，接下来针对一个具体的问题域，来进行分析和解说。这个问题域，我相信基本上是移动端开发都会存在的一个共性的问题域。那就是MVC! 
+
+ 
+
+啥？MVC？那不是Model-View-Controller嘛？是的。通常，我们采用的MVC+Serve的架构模式。但你听说过Massive-View-Controller吗？
 
 
 
@@ -64,13 +96,9 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 
 
 1. 视图(View):展示在屏幕上的视图组建，是接收用户的点击和输入第一入口
-
 2. 展示器(Presenter):传递视图传递的数据给交互器处理，传递交互器处理的结果给视图展示，传递导航调整给路由
-
 3. 交互器(Interactor):处理主要的业务逻辑
-
 4. 实体(Entity):交互器使用到的基本数据模型对象
-
 5. 路由(Router):集中处理导航视图逻辑，图中称为WireFrame线框
 
 ​
@@ -122,40 +150,64 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 因此，针对该模块的功能，我们可以设计一个登录模块协议,来表达登录模块的功能。目前只针对登录页面的进行设计，大概是这个样子的：
 
 
+
 {% highlight objective-c linenos %}
+
 @protocol YSLoginModuleInterface <NSObject>
+
 	
+
 /**
-*  登录操作
-*
-*  @param userInfo 账号信息
-*/
+
+- 登录操作
+  
+  *
+  
+- @param userInfo 账号信息
+  
+  */
+  
 - (void)loginInWithInfo:(id)userInfo;
 
 //  忘记密码操作
+
 - (void)forgetPassword;
 
 //  注册账户操作
+
 - (void)registAccount;
 
 /**
-*  第三方登录操作
-*
-*  @param loginType 第三方登录类型
-*/
+
+- 第三方登录操作
+  
+  *
+  
+- @param loginType 第三方登录类型
+  
+  */
+  
 - (void)thirdLoginWithLoginType:(YSThirdLoginType)loginType;
 
 /**
-*  根据用户名获取头像
-*
-*  @param accountStr 用户名
-*/
+
+- 根据用户名获取头像
+  
+  *
+  
+- @param accountStr 用户名
+  
+  */
+  
 - (void)fetchAvatarImageWithAccount:(NSString *)accountStr;
 
 @optional
+
 // 获取上次的缓存信息 用于显示
+
 - (void)getLastCacheingInfo:(void (^)(NSString *accountStr, NSString *password))userInfoBlock; 
-{% endhighlight %}
+  
+  {% endhighlight %}
 
 以上四个接口，明确了我们登录模块的核心功能。在确定好模块的功能之后，接下来就让我们按V－I－P—E－R的顺序，来进行依次剖析。
 
@@ -195,105 +247,182 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 @interface YSLoginInteractor : NSObject
 
 /**
-*  登陆处理
-*
-*  @param loginInfo    登陆信息
-*  @param SuccessBlock 成功
-*  @param FaieldBlock  失败
-	*/
+
+- 登陆处理
+  
+  *
+  
+- @param loginInfo    登陆信息
+  
+- @param SuccessBlock 成功
+  
+- @param FaieldBlock  失败
+  
+  	*/
+  
 - (void)loginInWithInfo:(id)userInfo
-           successBlock:(SuccessBlock) successBlock
-            failedBlock:(FailureBlock) faieldBlock;
+  
+  ``` 
+       successBlock:(SuccessBlock) successBlock
+        failedBlock:(FailureBlock) faieldBlock;
+  ```
 
 /**
-*  第三方登录操作
-*
-*  @param loginType 第三方登录类型
-*  @param viewController 登录所在的视图控制器
-*  @param SuccessBlock 成功
-*  @param FaieldBlock  失败
-*/
+
+- 第三方登录操作
+  
+  *
+  
+- @param loginType 第三方登录类型
+  
+- @param viewController 登录所在的视图控制器
+  
+- @param SuccessBlock 成功
+  
+- @param FaieldBlock  失败
+  
+  */
+  
 - (void)thirdLoginWithLoginType:(YSThirdLoginType)loginType
-                 viewController:(UIViewController *) viewController
+  
+  ``` 
+             viewController:(UIViewController *) viewController
+               successBlock:(SuccessBlock) successBlock
+                failedBlock:(FailureBlock) faieldBlock;
+  ```
+  
+  		
+  
+  /**
+  
+- 获取头像
+  
+  *
+  
+- @param accountStr   用户名
+  
+- @param successBlock 成功回调
+  
+- @param faieldBlock  失败回调
+  
+  */
+  
+- (void)fetchAvatarImageWithAccount:(NSString *)accountStr
+  
+  ``` 
                    successBlock:(SuccessBlock) successBlock
                     failedBlock:(FailureBlock) faieldBlock;
-		
-/**
-*  获取头像
-*
-*  @param accountStr   用户名
-*  @param successBlock 成功回调
-*  @param faieldBlock  失败回调
-*/
-- (void)fetchAvatarImageWithAccount:(NSString *)accountStr
-                       successBlock:(SuccessBlock) successBlock
-                        failedBlock:(FailureBlock) faieldBlock;
+  ```
 
 // 获取缓存账户信息
-- (void)getLastCacheingInfo:(void (^)(NSString *accountStr, NSString *password))userInfoBlock; 
-{% endhighlight %}
 
+- (void)getLastCacheingInfo:(void (^)(NSString *accountStr, NSString *password))userInfoBlock; 
+  
+  {% endhighlight %}
 
 它们的实现大致可以如下：
 
 ##### 登录
+
 {% highlight objective-c linenos %}
 
 - (void)loginInWithInfo:(id)userInfo
-           successBlock:(SuccessBlock) successBlock
-            failedBlock:(FailureBlock) faieldBlock
-{
-	[EzvizUser login:userInfo success:^(id request, id responseObject) {
-		//这里就是需要的逻辑处理
-		// 包括更新本地数据缓存
-		// 需要进行的关联请求操作
-		// .. 处理完跟登录成功绑定的相关业务逻辑后 回调展示器，进行相关展示操作
-		successBlock(nil);
-	
-	} failure:^(NSError *error, NSString *message) {
-		// 登录异常 我们需要根据错误码进行处理
-		// 萤石云APP需要根据各种错误码进行导航跳转进入不同处理流程，此外无多余的业务逻辑
-		faieldBlock(error);
-	}];
-}
-{% endhighlight %}
+  
+  ``` 
+       successBlock:(SuccessBlock) successBlock
+        failedBlock:(FailureBlock) faieldBlock
+  ```
+  
+  {
+  
+  	[EzvizUser login:userInfo success:^(id request, id responseObject) {
+  
+  		//这里就是需要的逻辑处理
+  
+  		// 包括更新本地数据缓存
+  
+  		// 需要进行的关联请求操作
+  
+  		// .. 处理完跟登录成功绑定的相关业务逻辑后 回调展示器，进行相关展示操作
+  
+  		successBlock(nil);
+  
+  	
+  
+  	} failure:^(NSError *error, NSString *message) {
+  
+  		// 登录异常 我们需要根据错误码进行处理
+  
+  		// 萤石云APP需要根据各种错误码进行导航跳转进入不同处理流程，此外无多余的业务逻辑
+  
+  		faieldBlock(error);
+  
+  	}];
+  
+  }
+  
+  {% endhighlight %}
 
 ##### 第三方登录
+
 {% highlight objective-c linenos %}
 
 - (void)thirdLoginWithLoginType:(YSThirdLoginType)loginType
-                 viewController:(UIViewController *) viewController
-                   successBlock:(SuccessBlock) successBlock
-                    failedBlock:(FailureBlock) faieldBlock
-{
-	// 有一个单独的第三方处理中心 获取对应的token userid等相关信息
-	[YSThirdLogin logininWithLoginType:loginType success:^(id userInfo) {
-	// 根据返回的数据，调用账号密码登录接口
-		[self loginInWithInfo:userInfo 
-		successBlock:successBlock 
-		faieldBlock:faieldBlock];
-	
-	} failure:^(NSError *error) {
-		faieldBlock(error);
-	}];
-}
-{% endhighlight %}
-
+  
+  ``` 
+             viewController:(UIViewController *) viewController
+               successBlock:(SuccessBlock) successBlock
+                failedBlock:(FailureBlock) faieldBlock
+  ```
+  
+  {
+  
+  	// 有一个单独的第三方处理中心 获取对应的token userid等相关信息
+  
+  	[YSThirdLogin logininWithLoginType:loginType success:^(id userInfo) {
+  
+  	// 根据返回的数据，调用账号密码登录接口
+  
+  		[self loginInWithInfo:userInfo 
+  
+  		successBlock:successBlock 
+  
+  		faieldBlock:faieldBlock];
+  
+  	
+  
+  	} failure:^(NSError *error) {
+  
+  		faieldBlock(error);
+  
+  	}];
+  
+  }
+  
+  {% endhighlight %}
 
 ##### 获取头像
 
 {% highlight objective-c linenos %}
 
 - (void)fetchAvatarImageWithAccount:(NSString *)accountStr
-                       successBlock:(SuccessBlock) successBlock
-                        failedBlock:(FailureBlock) faieldBlock
-{
-	// 根据accontStr  获取数据库或本地文件、缓存对应的头像
-	// 或者本地无缓存则数据请求等
-	// 根据处理 回调
-}
-{% endhighlight %}
-
+  
+  ``` 
+                   successBlock:(SuccessBlock) successBlock
+                    failedBlock:(FailureBlock) faieldBlock
+  ```
+  
+  {
+  
+  	// 根据accontStr  获取数据库或本地文件、缓存对应的头像
+  
+  	// 或者本地无缓存则数据请求等
+  
+  	// 根据处理 回调
+  
+  }
+  
+  {% endhighlight %}
 
 ##### 获取上次账户缓存信息	
 
@@ -316,7 +445,9 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 @property (nonatomic,strong)YSLoginViewController *userInterface;
 
 @property (nonatomic,strong)YSLoginWireFrame *loginWireFrame;
+
 {% endhighlight %}
+
 
 
 在展示器中，分别与交互器 、视图控制器、线框三者强关联在一起。我们来看看，它实现协议的接口：
@@ -325,95 +456,167 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 
 {% highlight objective-c linenos %}
 
-#pragma mark -protocol
+# pragma mark -protocol
+
 /**
-*  登录操作
-*
-*  @param userInfo 账号信息
-*/
+
+- 登录操作
+  
+  *
+  
+- @param userInfo 账号信息
+  
+  */
+  
 - (void)loginInWithInfo:(id)userInfo
-{
-	//检查userInfo格式
-	if (![YSCheckFormart checkUserInfo:userInfo key:kUserInfoKey])
-	{
-		//格式错误，则进行页面提示 所有的提示基本上都可以在展示器中进行
-		[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:@"输入格式错误"];
-		return;
-	}
+  
+  {
+  
+  	//检查userInfo格式
+  
+  	if (![YSCheckFormart checkUserInfo:userInfo key:kUserInfoKey])
+  
+  	{
+  
+  		//格式错误，则进行页面提示 所有的提示基本上都可以在展示器中进行
+  
+  		[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:@"输入格式错误"];
+  
+  		return;
+  
+  	}
 
 	//正确，则调用交互器
 
 	[self.loginInteractor loginInWithInfo:userInfo 								  successBlock:^(id responseObject)
+
 	{
+
 		// 登录成功 交给线框进行调转
+
 		[self showViewControllerWithViewControllerKey:kYSTabbarViewControllerKey 
+
 		params:nil];
+
 	}
+
 	failedBlock:^ (NSError *error){
+
 		// 1.登录失败 进行错误提示
+
 		[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:[error domain]];
+
 		// 2.根据错误码，进行异常流程处理 因为异常处理流程主要涉及到页面的跳转和错误的提示 因此将该驱动逻辑放在展示器中是最合适的地方
+
 		[self routerViewWithLoginErrorCode:[error code]];
+
 	}];
+
 }
 
 //  忘记密码操作
+
 - (void)forgetPassword
-{
-	//单纯的页面跳转，直接交给线框进行路由分发
-	[self showViewControllerWithViewControllerKey:kYSRecoverViewControllerKey 
-	params:nil];
-}
+  
+  {
+  
+  	//单纯的页面跳转，直接交给线框进行路由分发
+  
+  	[self showViewControllerWithViewControllerKey:kYSRecoverViewControllerKey 
+  
+  	params:nil];
+  
+  }
 
 //  注册账户操作
+
 - (void)registAccount
-{
-	[self showViewControllerWithViewControllerKey:kYSRegistViewControllerKey 
-	params:nil];
-}  
+  
+  {
+  
+  	[self showViewControllerWithViewControllerKey:kYSRegistViewControllerKey 
+  
+  	params:nil];
+  
+  }
 
 /**
-*  第三方登录操作
-*
-*  @param loginType 第三方登录类型
-*/
+
+- 第三方登录操作
+  
+  *
+  
+- @param loginType 第三方登录类型
+  
+  */
+  
 - (void)thirdLoginWithLoginType:(YSThirdLoginType)loginType
-{
-	// 与登录几乎一致
-	[self.loginInteractor  thirdLoginWithLoginType:loginType
-	                                viewController:self.userInterface
-	                                  successBlock:^(id responseObject){
-		// 登录成功 交给线框进行调转
-		[self showViewControllerWithKey:kYSTabbarViewControllerKey 
-		params:nil];
-	}
-	failedBlock:^ (NSError *error)
-	{
-		// 1.登录失败 进行错误提示
-		[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:[error domain]];
-		// 2.根据错误码，进行异常流程处理 因为异常处理流程主要涉及到页面的跳转和错误的提示 因此将该驱动逻辑放在展示器中是最合适的地方
-		[self routerViewWithLoginErrorCode:[error code]];
-	}];
-}
+  
+  {
+  
+  	// 与登录几乎一致
+  
+  	[self.loginInteractor  thirdLoginWithLoginType:loginType
+  
+  	                                viewController:self.userInterface
+  
+  	                                  successBlock:^(id responseObject){
+  
+  		// 登录成功 交给线框进行调转
+  
+  		[self showViewControllerWithKey:kYSTabbarViewControllerKey 
+  
+  		params:nil];
+  
+  	}
+  
+  	failedBlock:^ (NSError *error)
+  
+  	{
+  
+  		// 1.登录失败 进行错误提示
+  
+  		[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:[error domain]];
+  
+  		// 2.根据错误码，进行异常流程处理 因为异常处理流程主要涉及到页面的跳转和错误的提示 因此将该驱动逻辑放在展示器中是最合适的地方
+  
+  		[self routerViewWithLoginErrorCode:[error code]];
+  
+  	}];
+  
+  }
 
 //...略
 
 pragma mark -private
-- (void)showViewControllerWithKey:(NSString *)key params:(NSDictionary *)params
-{
-	// 数据对象
-	YSMessageInfo *messageInfo = [YSMessageInfo initwihMessageName:key params:params];
-	// 页面跳转
-	[self.loginWireFrame routingViewController:self.userInterface 			   
-	messageOfPage:messageInfo];
-}
-- (void)routerViewWithLoginErrorCode:(int)code
-{
-	// 根据错误码进行路由分法 
-	// 略
-}
-{% endhighlight %}
 
+- (void)showViewControllerWithKey:(NSString *)key params:(NSDictionary *)params
+  
+  {
+  
+  	// 数据对象
+  
+  	YSMessageInfo *messageInfo = [YSMessageInfo initwihMessageName:key params:params];
+  
+  	// 页面跳转
+  
+  	[self.loginWireFrame routingViewController:self.userInterface 			   
+  
+  	messageOfPage:messageInfo];
+  
+  }
+  
+- (void)routerViewWithLoginErrorCode:(int)code
+  
+  {
+  
+  	// 根据错误码进行路由分法 
+  
+  	// 略
+  
+  }
+  
+  {% endhighlight %}
 
 从上面可以看到，展示器的任务就是实现YSLoginModuleInterface协议，需要路由页面时则交给线框去处理，需要具体业务接口处理时，则交给交互器去处理，需要页面提示或逻辑判断进行页面导航时，则在本类中进行。此外，我们看到线框在此处的应用是根据给定一个key值以及一个messageInfo的参数进行调转。
 
@@ -426,81 +629,128 @@ pragma mark -private
 @interface YSUserInfo : NSObject
 
 @property (nonatomic, readonly , copy) NSString *accountStr;/**<账号*/
+
 @property (nonatomic, readonly , copy) NSString *passwordStr;/**<密码*/
 
 - (instancetype)initWithAccount:(NSString *)accountStr 
-password:(NSString *)passwordStr;
-{% endhighlight %}
-
+  
+  password:(NSString *)passwordStr;
+  
+  {% endhighlight %}
 
 ### WireFrame
 
 线框，导航的处理中心。在线框中，我们可以集中处理页面跳转的方式、自定义跳转动画的设置等。
 
 {% highlight objective-c linenos %}
+
 	
+
 @protocol YSWireFrameProtocol <NSObject>
 
 /**
-*  视图控制器路由
-*
-*  @param ViewController 视图控制器
-*  @param messager       消息
-*/
+
+- 视图控制器路由
+  
+  *
+  
+- @param ViewController 视图控制器
+  
+- @param messager       消息
+  
+  */
+  
 - (void)routingViewController:(UIViewController*)ViewController
-                messageOfPage:(YSMessageInfo*)messager;
+  
+  ``` 
+            messageOfPage:(YSMessageInfo*)messager;
+  ```
 
 @end
 
 @interface YSWireFrame : NSObject <YSWireFrameProtocol>
 
 - (void)routingViewController:(UIViewController*)ViewController
-                messageOfPage:(YSMessageInfo *)messager
-{
-	NSParameterAssert(messager != nil);
-	NSParameterAssert(ViewController != nil);
-	
-	SEL selector = [self selectorOfClassName:messager.messageNameStr];
-	IMP imp      = [self  methodForSelector:selector];
-	void (*func)(id,SEL,UIViewController*,NSDictionary*) = (void*)imp;
-	func(self ,selector,ViewController,messager.paramsDic);
-}
-
+  
+  ``` 
+            messageOfPage:(YSMessageInfo *)messager
+  ```
+  
+  {
+  
+  	NSParameterAssert(messager != nil);
+  
+  	NSParameterAssert(ViewController != nil);
+  
+  	
+  
+  	SEL selector = [self selectorOfClassName:messager.messageNameStr];
+  
+  	IMP imp      = [self  methodForSelector:selector];
+  
+  	void (*func)(id,SEL,UIViewController*,NSDictionary*) = (void*)imp;
+  
+  	func(self ,selector,ViewController,messager.paramsDic);
+  
+  }
+  
 - (SEL)selectorOfClassName:(NSString *)messageName
-{
-	static NSDictionary *selectordictionary = nil;
-	if(!selectordictionary)
-	{
-		selectordictionary = @{
-		kShowRegistUserOneViewController:
-		[NSValue valueWithPointer:
-		@selector(showRegistUserOneViewController:params:)],
-		kShowTabBarViewController:
-		[NSValue valueWithPointer:   @selector(showTabbarViewController:params:)]};
+  
+  {
+  
+  	static NSDictionary *selectordictionary = nil;
+  
+  	if(!selectordictionary)
+  
+  	{
+  
+  		selectordictionary = @{
+  
+  		kShowRegistUserOneViewController:
+  
+  		[NSValue valueWithPointer:
+  
+  		@selector(showRegistUserOneViewController:params:)],
+  
+  		kShowTabBarViewController:
+  
+  		[NSValue valueWithPointer:   @selector(showTabbarViewController:params:)]};
+  
     }
 
 	NSValue *value = [selectordictionary valueForKey:messageName];
 
 	return value ? [value pointerValue]:@selector(emptyMothedViewController:params:);
+
 }
 
 - (void)emptyMothedViewController:(UIViewController *)viewController params:(NSDictionary *)params
-{
-	DDLogCError(@"不存在对应的选择器方法,请注意实现！");
-}
-
+  
+  {
+  
+  	DDLogCError(@"不存在对应的选择器方法,请注意实现！");
+  
+  }
+  
 - (void)showRegistUserOneViewController:(UIViewController *)viewController params:(NSDictionary *)params
-{
-	//具体跳转处理  
-}
-
+  
+  {
+  
+  	//具体跳转处理  
+  
+  }
+  
 - (void)showTabbarViewController:(UIViewController *)viewController params:(NSDictionary *)params
-{
-	//具体跳转处理  
-}
-...
-{% endhighlight %}
-
+  
+  {
+  
+  	//具体跳转处理  
+  
+  }
+  
+  ...
+  
+  {% endhighlight %}
 
 在线框中，实现了跳转YSWireFrameProtocol协议。在具体实现中，创建了一个静态的字典来存储key值和对应的选择器方法。如果找不到方法，则调用默认的emptyMothedViewController方法。在具体的跳转中，可以定制化跳转风格和动画。
 
@@ -509,34 +759,54 @@ password:(NSString *)passwordStr;
 {% highlight objective-c linenos %}
 
 @interface YSLoginViewController : UIViewController
-/**
-*  实现登陆模块功能的对象，也是展示器，负责与视图控制器之间的交互。
-*/
-@property (nonatomic,strong)id <YSLoginModuleInterface> eventHander;
-	
-{% endhighlight %}
 
+/**
+
+- 实现登陆模块功能的对象，也是展示器，负责与视图控制器之间的交互。
+  
+  */
+  
+  @property (nonatomic,strong)id <YSLoginModuleInterface> eventHander;
+  
+  	
+  
+  {% endhighlight %}
 
 通过创建工厂类方法：
 
 {% highlight objective-c linenos %}
-+ (UIViewController *)YSLoginViewController
-{
-	HIKLoginViewController *userInterface = [[HIKLoginViewController alloc]init];
-	YSLoginInteractor   *interactor       = [[YSLoginInteractor alloc]init];
-	YSLoginPresenter    *presenter        = [[YSLoginPresenter alloc]init];
-	YSLoginWireFrame    *wireFrame        = [[YSLoginWireFrame alloc]init];
-	//视图控制器引用展示器
-	userInterface.eventHander             = presenter;
-	//展示器分别引用视图控制器 交互器 线框 
-	presenter.userInterface               = userInterface;
-	presenter.loginInteractor             = interactor;
-	presenter.loginWireFrame              = wireFrame;
-	// 返回视图控制器
-	return userInterface;
-}
-{% endhighlight %}
 
+- (UIViewController *)YSLoginViewController
+  
+  {
+  
+  	HIKLoginViewController *userInterface = [[HIKLoginViewController alloc]init];
+  
+  	YSLoginInteractor   *interactor       = [[YSLoginInteractor alloc]init];
+  
+  	YSLoginPresenter    *presenter        = [[YSLoginPresenter alloc]init];
+  
+  	YSLoginWireFrame    *wireFrame        = [[YSLoginWireFrame alloc]init];
+  
+  	//视图控制器引用展示器
+  
+  	userInterface.eventHander             = presenter;
+  
+  	//展示器分别引用视图控制器 交互器 线框 
+  
+  	presenter.userInterface               = userInterface;
+  
+  	presenter.loginInteractor             = interactor;
+  
+  	presenter.loginWireFrame              = wireFrame;
+  
+  	// 返回视图控制器
+  
+  	return userInterface;
+  
+  }
+  
+  {% endhighlight %}
 
 此时，我们再来看看登录模块之间的关系图：
 
@@ -545,9 +815,13 @@ password:(NSString *)passwordStr;
 是不是比较清晰了？我们首先分析了模块的核心功能，创建了YSLoginModuleInterface协议。依次将涉及的内容分为5个模块，每个模块只做一件事情，最后通工厂类方法，按照职责创建之间的依赖关系。只要你对VIPER有这样一个概念，那本篇的目的也就达到了。任何架构的学习和应用，也必须经过长久的实践和探索。
 
 	注意了,在模块引用中,我使用了strong强引用,会导致userinterface和presenter之间会存在循环
+
 	强引用问题。
+
 	但循环强引用并不是不好,针对你自己的模块进行抉择是否需要释放,比如有些模块在你APP中需要一直存
+
 	在的。又比如登录模块在登录进去之后,不需要存在了,只要在userinterface里将presenter设置为
+
 	nil打破循环强引用即可。
 
 ------
@@ -558,7 +832,7 @@ password:(NSString *)passwordStr;
 
 1.首先需要对VIPER每个模块的职责非常清晰，以及清晰的区分每块代码的职责。当我在写本篇文章的时候，仔细去回顾我重构的模块时，发现我的有些模块不只干了一件事情。
 
-2.VIPER架构目前没有成熟的应用方案，国外也有很多成功的应用案例。我刚讲述的实现方式也是个人的一种实践探索，给大家提供一个思路。不同的项目 ，拥有不同的问题域和关卡。在实际的应用中，只要牢记每个模块的职责，结合自己的项目进行运用才是上策。
+2.VIPER架构目前没有成熟的应用方案，但国外也有很多成功的应用案例。我刚讲述的实现方式也是个人的一种实践探索，给大家提供一个思路。不同的项目 ，拥有不同的问题域和关卡。在实际的应用中，只要牢记每个模块的职责，结合自己的项目进行运用才是上策。
 
 3.VIPER架构实践，推荐在复杂的逻辑处理页面或复杂的模块中进行应用。本身简单的操作视图控制器，如果还按VIPER的架构划分，反而显得复杂了。比如整个登录模块、图片管理模块等。上面提到的只是登录模块中的登录页面，其实可以将注册、忘记密码流程整合到一起，用VIPER实现。
 
@@ -566,9 +840,14 @@ password:(NSString *)passwordStr;
 
 5.最后，希望本篇文章对大家有所启迪。不管你认不认同VIPER架构，任何新技术的产生本身就需要质疑和不断的改进，只要你认为对你有所帮助，那么就大胆地去实践吧！
 
+
+
+**你也可以在slides上浏览[VIPER浅谈](http://slides.com/zhilshi/deck/live)**
+
 ------
 
 ## 参考
+
 [http://www.objc.io/issues/13-architecture/viper/](http://www.objc.io/issues/13-architecture/viper/)
 
 [http://mutualmobile.github.io/blog/2013/12/04/viper-introduction/](http://mutualmobile.github.io/blog/2013/12/04/viper-introduction/)
