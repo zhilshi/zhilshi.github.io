@@ -31,7 +31,7 @@ categories: iOS
    
 4. 问题越来越难以定位？
    
-5. 改不玩的bug单？
+5. 改不完的bug单？
    
 6. ...
    
@@ -43,7 +43,7 @@ categories: iOS
 
  
 
-啥？MVC？那不是Model-View-Controller嘛？是的。通常，我们采用的MVC+Serve的架构模式。但你听说过Massive-View-Controller吗？
+啥？MVC？那不是Model-View-Controller嘛？是的。通常，我们采用的MVC+service的架构模式。但你听说过Massive-View-Controller吗？
 
 
 
@@ -353,7 +353,7 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
   
   		// 登录异常 我们需要根据错误码进行处理
   
-  		// 萤石云APP需要根据各种错误码进行导航跳转进入不同处理流程，此外无多余的业务逻辑
+  		// 需要根据各种错误码进行导航跳转进入不同处理流程，此外无多余的业务逻辑
   
   		faieldBlock(error);
   
@@ -812,7 +812,7 @@ pragma mark -private
 
 ![](/images/viper/Login5.png)
 
-是不是比较清晰了？我们首先分析了模块的核心功能，创建了YSLoginModuleInterface协议。依次将涉及的内容分为5个模块，每个模块只做一件事情，最后通工厂类方法，按照职责创建之间的依赖关系。只要你对VIPER有这样一个概念，那本篇的目的也就达到了。任何架构的学习和应用，也必须经过长久的实践和探索。
+是不是比较清晰了？我们首先分析了模块的核心功能，创建了YSLoginModuleInterface协议。依次将涉及的内容分为5个模块，每个模块只做一件事情，最后通过工厂类方法，按照职责创建之间的依赖关系。只要你对VIPER有这样一个概念，那本篇的目的也就达到了。任何架构的学习和应用，也必须经过长久的实践和探索。
 
 	注意了,在模块引用中,我使用了strong强引用,会导致userinterface和presenter之间会存在循环
 
@@ -842,7 +842,7 @@ pragma mark -private
 
 
 
-**你也可以在slides上浏览[VIPER浅谈](http://slides.com/zhilshi/deck/live)**
+**你也可以在slides上浏览[VIPER浅谈](http://slides.com/zhilshi/deck#/)**
 
 ------
 
