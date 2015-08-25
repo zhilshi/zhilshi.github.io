@@ -103,7 +103,7 @@
     <p>问题越来越难以定位？</p>
   </li>
   <li>
-    <p>改不玩的bug单？</p>
+    <p>改不完的bug单？</p>
   </li>
   <li>
     <p>…</p>
@@ -118,7 +118,7 @@
 
 <p> </p>
 
-<p>啥？MVC？那不是Model-View-Controller嘛？是的。通常，我们采用的MVC+Serve的架构模式。但你听说过Massive-View-Controller吗？</p>
+<p>啥？MVC？那不是Model-View-Controller嘛？是的。通常，我们采用的MVC+service的架构模式。但你听说过Massive-View-Controller吗？</p>
 
 <hr />
 
@@ -314,154 +314,130 @@
 <span class="lineno">15</span> <span class="cm">  	*/</span>
 <span class="lineno">16</span>   
 <span class="lineno">17</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loginInWithInfo:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">userInfo</span>
-<span class="lineno">18</span>   
-<span class="lineno">19</span>   <span class="err">```</span> 
-<span class="lineno">20</span>        <span class="nl">successBlock</span><span class="p">:(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="n">successBlock</span>
-<span class="lineno">21</span>         <span class="nl">failedBlock</span><span class="p">:(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="n">faieldBlock</span><span class="p">;</span>
-<span class="lineno">22</span>   <span class="err">```</span>
-<span class="lineno">23</span> 
-<span class="lineno">24</span> <span class="cm">/**</span>
-<span class="lineno">25</span> 
-<span class="lineno">26</span> <span class="cm">- 第三方登录操作</span>
-<span class="lineno">27</span> <span class="cm">  </span>
-<span class="lineno">28</span> <span class="cm">  *</span>
-<span class="lineno">29</span> <span class="cm">  </span>
-<span class="lineno">30</span> <span class="cm">- @param loginType 第三方登录类型</span>
-<span class="lineno">31</span> <span class="cm">  </span>
-<span class="lineno">32</span> <span class="cm">- @param viewController 登录所在的视图控制器</span>
-<span class="lineno">33</span> <span class="cm">  </span>
-<span class="lineno">34</span> <span class="cm">- @param SuccessBlock 成功</span>
-<span class="lineno">35</span> <span class="cm">  </span>
-<span class="lineno">36</span> <span class="cm">- @param FaieldBlock  失败</span>
-<span class="lineno">37</span> <span class="cm">  </span>
-<span class="lineno">38</span> <span class="cm">  */</span>
-<span class="lineno">39</span>   
-<span class="lineno">40</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">thirdLoginWithLoginType</span><span class="p">:(</span><span class="n">YSThirdLoginType</span><span class="p">)</span><span class="n">loginType</span>
+<span class="lineno">18</span>            <span class="nf">successBlock:</span><span class="p">(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="nv">successBlock</span>
+<span class="lineno">19</span>             <span class="nf">failedBlock:</span><span class="p">(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="nv">faieldBlock</span><span class="p">;</span>
+<span class="lineno">20</span> 
+<span class="lineno">21</span> <span class="cm">/**</span>
+<span class="lineno">22</span> 
+<span class="lineno">23</span> <span class="cm">- 第三方登录操作</span>
+<span class="lineno">24</span> <span class="cm">  </span>
+<span class="lineno">25</span> <span class="cm">  *</span>
+<span class="lineno">26</span> <span class="cm">  </span>
+<span class="lineno">27</span> <span class="cm">- @param loginType 第三方登录类型</span>
+<span class="lineno">28</span> <span class="cm">  </span>
+<span class="lineno">29</span> <span class="cm">- @param viewController 登录所在的视图控制器</span>
+<span class="lineno">30</span> <span class="cm">  </span>
+<span class="lineno">31</span> <span class="cm">- @param SuccessBlock 成功</span>
+<span class="lineno">32</span> <span class="cm">  </span>
+<span class="lineno">33</span> <span class="cm">- @param FaieldBlock  失败</span>
+<span class="lineno">34</span> <span class="cm">  </span>
+<span class="lineno">35</span> <span class="cm">  */</span>
+<span class="lineno">36</span>   
+<span class="lineno">37</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">thirdLoginWithLoginType:</span><span class="p">(</span><span class="n">YSThirdLoginType</span><span class="p">)</span><span class="nv">loginType</span>
+<span class="lineno">38</span>                  <span class="nf">viewController:</span><span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span> <span class="nv">viewController</span>
+<span class="lineno">39</span>                    <span class="nf">successBlock:</span><span class="p">(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="nv">successBlock</span>
+<span class="lineno">40</span>                     <span class="nf">failedBlock:</span><span class="p">(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="nv">faieldBlock</span><span class="p">;</span>
 <span class="lineno">41</span>   
-<span class="lineno">42</span>   <span class="err">```</span> 
-<span class="lineno">43</span>              <span class="nl">viewController</span><span class="p">:(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span> <span class="n">viewController</span>
-<span class="lineno">44</span>                <span class="nl">successBlock</span><span class="p">:(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="n">successBlock</span>
-<span class="lineno">45</span>                 <span class="nl">failedBlock</span><span class="p">:(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="n">faieldBlock</span><span class="p">;</span>
-<span class="lineno">46</span>   <span class="err">```</span>
-<span class="lineno">47</span>   
-<span class="lineno">48</span>   		
-<span class="lineno">49</span>   
-<span class="lineno">50</span>   <span class="cm">/**</span>
+<span class="lineno">42</span>   <span class="cm">/**</span>
+<span class="lineno">43</span> <span class="cm">  </span>
+<span class="lineno">44</span> <span class="cm">- 获取头像</span>
+<span class="lineno">45</span> <span class="cm">  </span>
+<span class="lineno">46</span> <span class="cm">  *</span>
+<span class="lineno">47</span> <span class="cm">  </span>
+<span class="lineno">48</span> <span class="cm">- @param accountStr   用户名</span>
+<span class="lineno">49</span> <span class="cm">  </span>
+<span class="lineno">50</span> <span class="cm">- @param successBlock 成功回调</span>
 <span class="lineno">51</span> <span class="cm">  </span>
-<span class="lineno">52</span> <span class="cm">- 获取头像</span>
+<span class="lineno">52</span> <span class="cm">- @param faieldBlock  失败回调</span>
 <span class="lineno">53</span> <span class="cm">  </span>
-<span class="lineno">54</span> <span class="cm">  *</span>
-<span class="lineno">55</span> <span class="cm">  </span>
-<span class="lineno">56</span> <span class="cm">- @param accountStr   用户名</span>
-<span class="lineno">57</span> <span class="cm">  </span>
-<span class="lineno">58</span> <span class="cm">- @param successBlock 成功回调</span>
-<span class="lineno">59</span> <span class="cm">  </span>
-<span class="lineno">60</span> <span class="cm">- @param faieldBlock  失败回调</span>
-<span class="lineno">61</span> <span class="cm">  </span>
-<span class="lineno">62</span> <span class="cm">  */</span>
-<span class="lineno">63</span>   
-<span class="lineno">64</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">fetchAvatarImageWithAccount</span><span class="p">:(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">accountStr</span>
-<span class="lineno">65</span>   
-<span class="lineno">66</span>   <span class="err">```</span> 
-<span class="lineno">67</span>                    <span class="nl">successBlock</span><span class="p">:(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="n">successBlock</span>
-<span class="lineno">68</span>                     <span class="nl">failedBlock</span><span class="p">:(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="n">faieldBlock</span><span class="p">;</span>
-<span class="lineno">69</span>   <span class="err">```</span>
-<span class="lineno">70</span> 
-<span class="lineno">71</span> <span class="c1">// 获取缓存账户信息</span>
-<span class="lineno">72</span> 
-<span class="lineno">73</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">getLastCacheingInfo</span><span class="p">:(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="bp">NSString</span> <span class="o">*</span><span class="n">accountStr</span><span class="p">,</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">password</span><span class="p">))</span><span class="n">userInfoBlock</span><span class="p">;</span></code></pre></div>
+<span class="lineno">54</span> <span class="cm">  */</span>
+<span class="lineno">55</span>   
+<span class="lineno">56</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">fetchAvatarImageWithAccount:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">accountStr</span>
+<span class="lineno">57</span>                        <span class="nf">successBlock:</span><span class="p">(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="nv">successBlock</span>
+<span class="lineno">58</span>                         <span class="nf">failedBlock:</span><span class="p">(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="nv">faieldBlock</span><span class="p">;</span>
+<span class="lineno">59</span> <span class="c1">// 获取缓存账户信息</span>
+<span class="lineno">60</span> 
+<span class="lineno">61</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">getLastCacheingInfo:</span><span class="p">(</span><span class="kt">void</span> <span class="p">(</span><span class="o">^</span><span class="p">)(</span><span class="bp">NSString</span> <span class="o">*</span><span class="n">accountStr</span><span class="p">,</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">password</span><span class="p">))</span><span class="nv">userInfoBlock</span><span class="p">;</span></code></pre></div>
 
 <p>它们的实现大致可以如下：</p>
 
 <h5 id="section-6">登录</h5>
 
 <div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="lineno"> 1</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">loginInWithInfo:</span><span class="p">(</span><span class="kt">id</span><span class="p">)</span><span class="nv">userInfo</span>
-<span class="lineno"> 2</span>   
-<span class="lineno"> 3</span>   <span class="err">```</span> 
-<span class="lineno"> 4</span>        <span class="nl">successBlock</span><span class="p">:(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="n">successBlock</span>
-<span class="lineno"> 5</span>         <span class="nl">failedBlock</span><span class="p">:(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="n">faieldBlock</span>
-<span class="lineno"> 6</span>   <span class="err">```</span>
-<span class="lineno"> 7</span>   
-<span class="lineno"> 8</span>   <span class="p">{</span>
-<span class="lineno"> 9</span>   
-<span class="lineno">10</span>   	<span class="p">[</span><span class="n">EzvizUser</span> <span class="nl">login</span><span class="p">:</span><span class="n">userInfo</span> <span class="nl">success</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">request</span><span class="p">,</span> <span class="kt">id</span> <span class="n">responseObject</span><span class="p">)</span> <span class="p">{</span>
-<span class="lineno">11</span>   
-<span class="lineno">12</span>   		<span class="c1">//这里就是需要的逻辑处理</span>
-<span class="lineno">13</span>   
-<span class="lineno">14</span>   		<span class="c1">// 包括更新本地数据缓存</span>
-<span class="lineno">15</span>   
-<span class="lineno">16</span>   		<span class="c1">// 需要进行的关联请求操作</span>
-<span class="lineno">17</span>   
-<span class="lineno">18</span>   		<span class="c1">// .. 处理完跟登录成功绑定的相关业务逻辑后 回调展示器，进行相关展示操作</span>
-<span class="lineno">19</span>   
-<span class="lineno">20</span>   		<span class="n">successBlock</span><span class="p">(</span><span class="nb">nil</span><span class="p">);</span>
-<span class="lineno">21</span>   
-<span class="lineno">22</span>   	
-<span class="lineno">23</span>   
-<span class="lineno">24</span>   	<span class="p">}</span> <span class="nl">failure</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">message</span><span class="p">)</span> <span class="p">{</span>
-<span class="lineno">25</span>   
-<span class="lineno">26</span>   		<span class="c1">// 登录异常 我们需要根据错误码进行处理</span>
-<span class="lineno">27</span>   
-<span class="lineno">28</span>   		<span class="c1">// 萤石云APP需要根据各种错误码进行导航跳转进入不同处理流程，此外无多余的业务逻辑</span>
+<span class="lineno"> 2</span>            <span class="nf">successBlock:</span><span class="p">(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="nv">successBlock</span>
+<span class="lineno"> 3</span>             <span class="nf">failedBlock:</span><span class="p">(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="nv">faieldBlock</span>
+<span class="lineno"> 4</span>     <span class="p">{</span>
+<span class="lineno"> 5</span>   
+<span class="lineno"> 6</span>         <span class="p">[</span><span class="n">EzvizUser</span> <span class="nl">login</span><span class="p">:</span><span class="n">userInfo</span> <span class="nl">success</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">request</span><span class="p">,</span> <span class="kt">id</span> <span class="n">responseObject</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno"> 7</span> 
+<span class="lineno"> 8</span>             <span class="c1">//这里就是需要的逻辑处理</span>
+<span class="lineno"> 9</span> 
+<span class="lineno">10</span>             <span class="c1">// 包括更新本地数据缓存</span>
+<span class="lineno">11</span> 
+<span class="lineno">12</span>             <span class="c1">// 需要进行的关联请求操作</span>
+<span class="lineno">13</span> 
+<span class="lineno">14</span>             <span class="c1">// .. 处理完跟登录成功绑定的相关业务逻辑后 回调展示器，进行相关展示操作</span>
+<span class="lineno">15</span> 
+<span class="lineno">16</span>             <span class="n">successBlock</span><span class="p">(</span><span class="nb">nil</span><span class="p">);</span>
+<span class="lineno">17</span> 
+<span class="lineno">18</span> 
+<span class="lineno">19</span> 
+<span class="lineno">20</span>         <span class="p">}</span> <span class="nl">failure</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">,</span> <span class="bp">NSString</span> <span class="o">*</span><span class="n">message</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno">21</span> 
+<span class="lineno">22</span>             <span class="c1">// 登录异常 我们需要根据错误码进行处理</span>
+<span class="lineno">23</span> 
+<span class="lineno">24</span>             <span class="c1">// 需要根据各种错误码进行导航跳转进入不同处理流程，此外无多余的业务逻辑</span>
+<span class="lineno">25</span> 
+<span class="lineno">26</span>             <span class="n">faieldBlock</span><span class="p">(</span><span class="n">error</span><span class="p">);</span>
+<span class="lineno">27</span> 
+<span class="lineno">28</span>         <span class="p">}];</span>
 <span class="lineno">29</span>   
-<span class="lineno">30</span>   		<span class="n">faieldBlock</span><span class="p">(</span><span class="n">error</span><span class="p">);</span>
-<span class="lineno">31</span>   
-<span class="lineno">32</span>   	<span class="p">}];</span>
-<span class="lineno">33</span>   
-<span class="lineno">34</span>   <span class="p">}</span></code></pre></div>
+<span class="lineno">30</span>   <span class="p">}</span></code></pre></div>
 
 <h5 id="section-7">第三方登录</h5>
 
 <div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="lineno"> 1</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">thirdLoginWithLoginType:</span><span class="p">(</span><span class="n">YSThirdLoginType</span><span class="p">)</span><span class="nv">loginType</span>
-<span class="lineno"> 2</span>   
-<span class="lineno"> 3</span>   <span class="err">```</span> 
-<span class="lineno"> 4</span>              <span class="nl">viewController</span><span class="p">:(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span> <span class="n">viewController</span>
-<span class="lineno"> 5</span>                <span class="nl">successBlock</span><span class="p">:(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="n">successBlock</span>
-<span class="lineno"> 6</span>                 <span class="nl">failedBlock</span><span class="p">:(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="n">faieldBlock</span>
-<span class="lineno"> 7</span>   <span class="err">```</span>
+<span class="lineno"> 2</span>                  <span class="nf">viewController:</span><span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span> <span class="nv">viewController</span>
+<span class="lineno"> 3</span>                    <span class="nf">successBlock:</span><span class="p">(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="nv">successBlock</span>
+<span class="lineno"> 4</span>                     <span class="nf">failedBlock:</span><span class="p">(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="nv">faieldBlock</span>
+<span class="lineno"> 5</span>   <span class="p">{</span>
+<span class="lineno"> 6</span>   
+<span class="lineno"> 7</span>   	<span class="c1">// 有一个单独的第三方处理中心 获取对应的token userid等相关信息</span>
 <span class="lineno"> 8</span>   
-<span class="lineno"> 9</span>   <span class="p">{</span>
+<span class="lineno"> 9</span>   	<span class="p">[</span><span class="n">YSThirdLogin</span> <span class="nl">logininWithLoginType</span><span class="p">:</span><span class="n">loginType</span> <span class="nl">success</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">userInfo</span><span class="p">)</span> <span class="p">{</span>
 <span class="lineno">10</span>   
-<span class="lineno">11</span>   	<span class="c1">// 有一个单独的第三方处理中心 获取对应的token userid等相关信息</span>
+<span class="lineno">11</span>   	<span class="c1">// 根据返回的数据，调用账号密码登录接口</span>
 <span class="lineno">12</span>   
-<span class="lineno">13</span>   	<span class="p">[</span><span class="n">YSThirdLogin</span> <span class="nl">logininWithLoginType</span><span class="p">:</span><span class="n">loginType</span> <span class="nl">success</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">userInfo</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno">13</span>   		<span class="p">[</span><span class="nb">self</span> <span class="nl">loginInWithInfo</span><span class="p">:</span><span class="n">userInfo</span> 
 <span class="lineno">14</span>   
-<span class="lineno">15</span>   	<span class="c1">// 根据返回的数据，调用账号密码登录接口</span>
+<span class="lineno">15</span>   		<span class="nl">successBlock</span><span class="p">:</span><span class="n">successBlock</span> 
 <span class="lineno">16</span>   
-<span class="lineno">17</span>   		<span class="p">[</span><span class="nb">self</span> <span class="nl">loginInWithInfo</span><span class="p">:</span><span class="n">userInfo</span> 
+<span class="lineno">17</span>   		<span class="nl">faieldBlock</span><span class="p">:</span><span class="n">faieldBlock</span><span class="p">];</span>
 <span class="lineno">18</span>   
-<span class="lineno">19</span>   		<span class="nl">successBlock</span><span class="p">:</span><span class="n">successBlock</span> 
+<span class="lineno">19</span>   	
 <span class="lineno">20</span>   
-<span class="lineno">21</span>   		<span class="nl">faieldBlock</span><span class="p">:</span><span class="n">faieldBlock</span><span class="p">];</span>
+<span class="lineno">21</span>   	<span class="p">}</span> <span class="nl">failure</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
 <span class="lineno">22</span>   
-<span class="lineno">23</span>   	
+<span class="lineno">23</span>   		<span class="n">faieldBlock</span><span class="p">(</span><span class="n">error</span><span class="p">);</span>
 <span class="lineno">24</span>   
-<span class="lineno">25</span>   	<span class="p">}</span> <span class="nl">failure</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+<span class="lineno">25</span>   	<span class="p">}];</span>
 <span class="lineno">26</span>   
-<span class="lineno">27</span>   		<span class="n">faieldBlock</span><span class="p">(</span><span class="n">error</span><span class="p">);</span>
-<span class="lineno">28</span>   
-<span class="lineno">29</span>   	<span class="p">}];</span>
-<span class="lineno">30</span>   
-<span class="lineno">31</span>   <span class="p">}</span></code></pre></div>
+<span class="lineno">27</span>   <span class="p">}</span></code></pre></div>
 
 <h5 id="section-8">获取头像</h5>
 
 <div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="lineno"> 1</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">fetchAvatarImageWithAccount:</span><span class="p">(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="nv">accountStr</span>
-<span class="lineno"> 2</span>   
-<span class="lineno"> 3</span>   <span class="err">```</span> 
-<span class="lineno"> 4</span>                    <span class="nl">successBlock</span><span class="p">:(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="n">successBlock</span>
-<span class="lineno"> 5</span>                     <span class="nl">failedBlock</span><span class="p">:(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="n">faieldBlock</span>
-<span class="lineno"> 6</span>   <span class="err">```</span>
+<span class="lineno"> 2</span>                        <span class="nf">successBlock:</span><span class="p">(</span><span class="n">SuccessBlock</span><span class="p">)</span> <span class="nv">successBlock</span>
+<span class="lineno"> 3</span>                         <span class="nf">failedBlock:</span><span class="p">(</span><span class="n">FailureBlock</span><span class="p">)</span> <span class="nv">faieldBlock</span>
+<span class="lineno"> 4</span>   <span class="p">{</span>
+<span class="lineno"> 5</span>   
+<span class="lineno"> 6</span>   	<span class="c1">// 根据accontStr  获取数据库或本地文件、缓存对应的头像</span>
 <span class="lineno"> 7</span>   
-<span class="lineno"> 8</span>   <span class="p">{</span>
+<span class="lineno"> 8</span>   	<span class="c1">// 或者本地无缓存则数据请求等</span>
 <span class="lineno"> 9</span>   
-<span class="lineno">10</span>   	<span class="c1">// 根据accontStr  获取数据库或本地文件、缓存对应的头像</span>
+<span class="lineno">10</span>   	<span class="c1">// 根据处理 回调</span>
 <span class="lineno">11</span>   
-<span class="lineno">12</span>   	<span class="c1">// 或者本地无缓存则数据请求等</span>
-<span class="lineno">13</span>   
-<span class="lineno">14</span>   	<span class="c1">// 根据处理 回调</span>
-<span class="lineno">15</span>   
-<span class="lineno">16</span>   <span class="p">}</span></code></pre></div>
+<span class="lineno">12</span>   <span class="p">}</span></code></pre></div>
 
 <h5 id="section-9">获取上次账户缓存信息</h5>
 
@@ -506,144 +482,143 @@
 <span class="lineno"> 19</span>   	<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">[</span><span class="n">YSCheckFormart</span> <span class="nl">checkUserInfo</span><span class="p">:</span><span class="n">userInfo</span> <span class="nl">key</span><span class="p">:</span><span class="n">kUserInfoKey</span><span class="p">])</span>
 <span class="lineno"> 20</span>   
 <span class="lineno"> 21</span>   	<span class="p">{</span>
-<span class="lineno"> 22</span>   
-<span class="lineno"> 23</span>   		<span class="c1">//格式错误，则进行页面提示 所有的提示基本上都可以在展示器中进行</span>
-<span class="lineno"> 24</span>   
-<span class="lineno"> 25</span>   		<span class="p">[[</span><span class="n">YSProgressHUD</span> <span class="n">shareInstance</span><span class="p">]</span><span class="nl">showAutoDisapperWithTitle</span><span class="p">:</span><span class="s">@&quot;输入格式错误&quot;</span><span class="p">];</span>
-<span class="lineno"> 26</span>   
-<span class="lineno"> 27</span>   		<span class="k">return</span><span class="p">;</span>
-<span class="lineno"> 28</span>   
-<span class="lineno"> 29</span>   	<span class="p">}</span>
-<span class="lineno"> 30</span> 
-<span class="lineno"> 31</span> 	<span class="c1">//正确，则调用交互器</span>
-<span class="lineno"> 32</span> 
-<span class="lineno"> 33</span> 	<span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">loginInteractor</span> <span class="nl">loginInWithInfo</span><span class="p">:</span><span class="n">userInfo</span> 								  <span class="nl">successBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">responseObject</span><span class="p">)</span>
-<span class="lineno"> 34</span> 
-<span class="lineno"> 35</span> 	<span class="p">{</span>
-<span class="lineno"> 36</span> 
-<span class="lineno"> 37</span> 		<span class="c1">// 登录成功 交给线框进行调转</span>
-<span class="lineno"> 38</span> 
-<span class="lineno"> 39</span> 		<span class="p">[</span><span class="nb">self</span> <span class="nl">showViewControllerWithViewControllerKey</span><span class="p">:</span><span class="n">kYSTabbarViewControllerKey</span> 
-<span class="lineno"> 40</span> 
-<span class="lineno"> 41</span> 		<span class="nl">params</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
-<span class="lineno"> 42</span> 
-<span class="lineno"> 43</span> 	<span class="p">}</span>
-<span class="lineno"> 44</span> 
-<span class="lineno"> 45</span> 	<span class="nl">failedBlock</span><span class="p">:</span><span class="o">^</span> <span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">){</span>
-<span class="lineno"> 46</span> 
-<span class="lineno"> 47</span> 		<span class="c1">// 1.登录失败 进行错误提示</span>
-<span class="lineno"> 48</span> 
-<span class="lineno"> 49</span> 		<span class="p">[[</span><span class="n">YSProgressHUD</span> <span class="n">shareInstance</span><span class="p">]</span><span class="nl">showAutoDisapperWithTitle</span><span class="p">:[</span><span class="n">error</span> <span class="n">domain</span><span class="p">]];</span>
-<span class="lineno"> 50</span> 
-<span class="lineno"> 51</span> 		<span class="c1">// 2.根据错误码，进行异常流程处理 因为异常处理流程主要涉及到页面的跳转和错误的提示 因此将该驱动逻辑放在展示器中是最合适的地方</span>
-<span class="lineno"> 52</span> 
-<span class="lineno"> 53</span> 		<span class="p">[</span><span class="nb">self</span> <span class="nl">routerViewWithLoginErrorCode</span><span class="p">:[</span><span class="n">error</span> <span class="n">code</span><span class="p">]];</span>
-<span class="lineno"> 54</span> 
-<span class="lineno"> 55</span> 	<span class="p">}];</span>
-<span class="lineno"> 56</span> 
-<span class="lineno"> 57</span> <span class="p">}</span>
-<span class="lineno"> 58</span> 
-<span class="lineno"> 59</span> <span class="c1">//  忘记密码操作</span>
-<span class="lineno"> 60</span> 
-<span class="lineno"> 61</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">forgetPassword</span>
-<span class="lineno"> 62</span>   
-<span class="lineno"> 63</span>   <span class="p">{</span>
-<span class="lineno"> 64</span>   
-<span class="lineno"> 65</span>   	<span class="c1">//单纯的页面跳转，直接交给线框进行路由分发</span>
-<span class="lineno"> 66</span>   
-<span class="lineno"> 67</span>   	<span class="p">[</span><span class="nb">self</span> <span class="nl">showViewControllerWithViewControllerKey</span><span class="p">:</span><span class="n">kYSRecoverViewControllerKey</span> 
-<span class="lineno"> 68</span>   
-<span class="lineno"> 69</span>   	<span class="nl">params</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
-<span class="lineno"> 70</span>   
-<span class="lineno"> 71</span>   <span class="p">}</span>
-<span class="lineno"> 72</span> 
-<span class="lineno"> 73</span> <span class="c1">//  注册账户操作</span>
-<span class="lineno"> 74</span> 
-<span class="lineno"> 75</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">registAccount</span>
-<span class="lineno"> 76</span>   
-<span class="lineno"> 77</span>   <span class="p">{</span>
-<span class="lineno"> 78</span>   
-<span class="lineno"> 79</span>   	<span class="p">[</span><span class="nb">self</span> <span class="nl">showViewControllerWithViewControllerKey</span><span class="p">:</span><span class="n">kYSRegistViewControllerKey</span> 
-<span class="lineno"> 80</span>   
-<span class="lineno"> 81</span>   	<span class="nl">params</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
-<span class="lineno"> 82</span>   
-<span class="lineno"> 83</span>   <span class="p">}</span>
-<span class="lineno"> 84</span> 
-<span class="lineno"> 85</span> <span class="cm">/**</span>
-<span class="lineno"> 86</span> 
-<span class="lineno"> 87</span> <span class="cm">- 第三方登录操作</span>
-<span class="lineno"> 88</span> <span class="cm">  </span>
-<span class="lineno"> 89</span> <span class="cm">  *</span>
-<span class="lineno"> 90</span> <span class="cm">  </span>
-<span class="lineno"> 91</span> <span class="cm">- @param loginType 第三方登录类型</span>
-<span class="lineno"> 92</span> <span class="cm">  </span>
-<span class="lineno"> 93</span> <span class="cm">  */</span>
-<span class="lineno"> 94</span>   
-<span class="lineno"> 95</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">thirdLoginWithLoginType:</span><span class="p">(</span><span class="n">YSThirdLoginType</span><span class="p">)</span><span class="nv">loginType</span>
-<span class="lineno"> 96</span>   
-<span class="lineno"> 97</span>   <span class="p">{</span>
-<span class="lineno"> 98</span>   
-<span class="lineno"> 99</span>   	<span class="c1">// 与登录几乎一致</span>
-<span class="lineno">100</span>   
-<span class="lineno">101</span>   	<span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">loginInteractor</span>  <span class="nl">thirdLoginWithLoginType</span><span class="p">:</span><span class="n">loginType</span>
-<span class="lineno">102</span>   
-<span class="lineno">103</span>   	                                <span class="nl">viewController</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">userInterface</span>
-<span class="lineno">104</span>   
-<span class="lineno">105</span>   	                                  <span class="nl">successBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">responseObject</span><span class="p">){</span>
-<span class="lineno">106</span>   
-<span class="lineno">107</span>   		<span class="c1">// 登录成功 交给线框进行调转</span>
-<span class="lineno">108</span>   
-<span class="lineno">109</span>   		<span class="p">[</span><span class="nb">self</span> <span class="nl">showViewControllerWithKey</span><span class="p">:</span><span class="n">kYSTabbarViewControllerKey</span> 
-<span class="lineno">110</span>   
-<span class="lineno">111</span>   		<span class="nl">params</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
-<span class="lineno">112</span>   
-<span class="lineno">113</span>   	<span class="p">}</span>
-<span class="lineno">114</span>   
-<span class="lineno">115</span>   	<span class="nl">failedBlock</span><span class="p">:</span><span class="o">^</span> <span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span>
-<span class="lineno">116</span>   
-<span class="lineno">117</span>   	<span class="p">{</span>
-<span class="lineno">118</span>   
-<span class="lineno">119</span>   		<span class="c1">// 1.登录失败 进行错误提示</span>
-<span class="lineno">120</span>   
-<span class="lineno">121</span>   		<span class="p">[[</span><span class="n">YSProgressHUD</span> <span class="n">shareInstance</span><span class="p">]</span><span class="nl">showAutoDisapperWithTitle</span><span class="p">:[</span><span class="n">error</span> <span class="n">domain</span><span class="p">]];</span>
-<span class="lineno">122</span>   
-<span class="lineno">123</span>   		<span class="c1">// 2.根据错误码，进行异常流程处理 因为异常处理流程主要涉及到页面的跳转和错误的提示 因此将该驱动逻辑放在展示器中是最合适的地方</span>
-<span class="lineno">124</span>   
-<span class="lineno">125</span>   		<span class="p">[</span><span class="nb">self</span> <span class="nl">routerViewWithLoginErrorCode</span><span class="p">:[</span><span class="n">error</span> <span class="n">code</span><span class="p">]];</span>
-<span class="lineno">126</span>   
-<span class="lineno">127</span>   	<span class="p">}];</span>
-<span class="lineno">128</span>   
-<span class="lineno">129</span>   <span class="p">}</span>
-<span class="lineno">130</span> 
-<span class="lineno">131</span> <span class="c1">//...略</span>
-<span class="lineno">132</span> 
-<span class="lineno">133</span> <span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span><span class="n">private</span>
-<span class="lineno">134</span> 
-<span class="lineno">135</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">showViewControllerWithKey</span><span class="p">:(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">key</span> <span class="nl">params</span><span class="p">:(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span>
-<span class="lineno">136</span>   
-<span class="lineno">137</span>   <span class="p">{</span>
-<span class="lineno">138</span>   
-<span class="lineno">139</span>   	<span class="c1">// 数据对象</span>
-<span class="lineno">140</span>   
-<span class="lineno">141</span>   	<span class="n">YSMessageInfo</span> <span class="o">*</span><span class="n">messageInfo</span> <span class="o">=</span> <span class="p">[</span><span class="n">YSMessageInfo</span> <span class="nl">initwihMessageName</span><span class="p">:</span><span class="n">key</span> <span class="nl">params</span><span class="p">:</span><span class="n">params</span><span class="p">];</span>
-<span class="lineno">142</span>   
-<span class="lineno">143</span>   	<span class="c1">// 页面跳转</span>
-<span class="lineno">144</span>   
-<span class="lineno">145</span>   	<span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">loginWireFrame</span> <span class="nl">routingViewController</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">userInterface</span> 			   
-<span class="lineno">146</span>   
-<span class="lineno">147</span>   	<span class="nl">messageOfPage</span><span class="p">:</span><span class="n">messageInfo</span><span class="p">];</span>
-<span class="lineno">148</span>   
-<span class="lineno">149</span>   <span class="p">}</span>
-<span class="lineno">150</span>   
-<span class="lineno">151</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">routerViewWithLoginErrorCode</span><span class="p">:(</span><span class="kt">int</span><span class="p">)</span><span class="n">code</span>
-<span class="lineno">152</span>   
-<span class="lineno">153</span>   <span class="p">{</span>
-<span class="lineno">154</span>   
-<span class="lineno">155</span>   	<span class="c1">// 根据错误码进行路由分法 </span>
-<span class="lineno">156</span>   
-<span class="lineno">157</span>   	<span class="c1">// 略</span>
-<span class="lineno">158</span>   
-<span class="lineno">159</span>   <span class="p">}</span></code></pre></div>
+<span class="lineno"> 22</span>   		<span class="c1">//格式错误，则进行页面提示 所有的提示基本上都可以在展示器中进行</span>
+<span class="lineno"> 23</span>   
+<span class="lineno"> 24</span>   		<span class="p">[[</span><span class="n">YSProgressHUD</span> <span class="n">shareInstance</span><span class="p">]</span><span class="nl">showAutoDisapperWithTitle</span><span class="p">:</span><span class="s">@&quot;输入格式错误&quot;</span><span class="p">];</span>
+<span class="lineno"> 25</span>   
+<span class="lineno"> 26</span>   		<span class="k">return</span><span class="p">;</span>
+<span class="lineno"> 27</span>   
+<span class="lineno"> 28</span>   	<span class="p">}</span>
+<span class="lineno"> 29</span> 
+<span class="lineno"> 30</span> 	<span class="c1">//正确，则调用交互器</span>
+<span class="lineno"> 31</span> 
+<span class="lineno"> 32</span> 	<span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">loginInteractor</span> <span class="nl">loginInWithInfo</span><span class="p">:</span><span class="n">userInfo</span> 	<span class="nl">successBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">responseObject</span><span class="p">)</span>
+<span class="lineno"> 33</span> 
+<span class="lineno"> 34</span> 	<span class="p">{</span>
+<span class="lineno"> 35</span> 
+<span class="lineno"> 36</span> 		<span class="c1">// 登录成功 交给线框进行调转</span>
+<span class="lineno"> 37</span> 
+<span class="lineno"> 38</span> 		<span class="p">[</span><span class="nb">self</span> <span class="nl">showViewControllerWithViewControllerKey</span><span class="p">:</span><span class="n">kYSTabbarViewControllerKey</span> 
+<span class="lineno"> 39</span> 
+<span class="lineno"> 40</span> 		<span class="nl">params</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+<span class="lineno"> 41</span> 
+<span class="lineno"> 42</span> 	<span class="p">}</span>
+<span class="lineno"> 43</span> 
+<span class="lineno"> 44</span> 	<span class="nl">failedBlock</span><span class="p">:</span><span class="o">^</span> <span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">){</span>
+<span class="lineno"> 45</span> 
+<span class="lineno"> 46</span> 		<span class="c1">// 1.登录失败 进行错误提示</span>
+<span class="lineno"> 47</span> 
+<span class="lineno"> 48</span> 		<span class="p">[[</span><span class="n">YSProgressHUD</span> <span class="n">shareInstance</span><span class="p">]</span><span class="nl">showAutoDisapperWithTitle</span><span class="p">:[</span><span class="n">error</span> <span class="n">domain</span><span class="p">]];</span>
+<span class="lineno"> 49</span> 
+<span class="lineno"> 50</span> 		<span class="c1">// 2.根据错误码，进行异常流程处理 因为异常处理流程主要涉及到页面的跳转和错误的提示 因此将该驱动逻辑放在展示器中是最合适的地方</span>
+<span class="lineno"> 51</span> 
+<span class="lineno"> 52</span> 		<span class="p">[</span><span class="nb">self</span> <span class="nl">routerViewWithLoginErrorCode</span><span class="p">:[</span><span class="n">error</span> <span class="n">code</span><span class="p">]];</span>
+<span class="lineno"> 53</span> 
+<span class="lineno"> 54</span> 	<span class="p">}];</span>
+<span class="lineno"> 55</span> 
+<span class="lineno"> 56</span> <span class="p">}</span>
+<span class="lineno"> 57</span> 
+<span class="lineno"> 58</span> <span class="c1">//  忘记密码操作</span>
+<span class="lineno"> 59</span> 
+<span class="lineno"> 60</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">forgetPassword</span>
+<span class="lineno"> 61</span>   
+<span class="lineno"> 62</span>   <span class="p">{</span>
+<span class="lineno"> 63</span>   
+<span class="lineno"> 64</span>   	<span class="c1">//单纯的页面跳转，直接交给线框进行路由分发</span>
+<span class="lineno"> 65</span>   
+<span class="lineno"> 66</span>   	<span class="p">[</span><span class="nb">self</span> <span class="nl">showViewControllerWithViewControllerKey</span><span class="p">:</span><span class="n">kYSRecoverViewControllerKey</span> 
+<span class="lineno"> 67</span>   
+<span class="lineno"> 68</span>   	<span class="nl">params</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+<span class="lineno"> 69</span>   
+<span class="lineno"> 70</span>   <span class="p">}</span>
+<span class="lineno"> 71</span> 
+<span class="lineno"> 72</span> <span class="c1">//  注册账户操作</span>
+<span class="lineno"> 73</span> 
+<span class="lineno"> 74</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">registAccount</span>
+<span class="lineno"> 75</span>   
+<span class="lineno"> 76</span>   <span class="p">{</span>
+<span class="lineno"> 77</span>   
+<span class="lineno"> 78</span>   	<span class="p">[</span><span class="nb">self</span> <span class="nl">showViewControllerWithViewControllerKey</span><span class="p">:</span><span class="n">kYSRegistViewControllerKey</span> 
+<span class="lineno"> 79</span>   
+<span class="lineno"> 80</span>   	<span class="nl">params</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+<span class="lineno"> 81</span>   
+<span class="lineno"> 82</span>   <span class="p">}</span>
+<span class="lineno"> 83</span> 
+<span class="lineno"> 84</span> <span class="cm">/**</span>
+<span class="lineno"> 85</span> 
+<span class="lineno"> 86</span> <span class="cm">- 第三方登录操作</span>
+<span class="lineno"> 87</span> <span class="cm">  </span>
+<span class="lineno"> 88</span> <span class="cm">  *</span>
+<span class="lineno"> 89</span> <span class="cm">  </span>
+<span class="lineno"> 90</span> <span class="cm">- @param loginType 第三方登录类型</span>
+<span class="lineno"> 91</span> <span class="cm">  </span>
+<span class="lineno"> 92</span> <span class="cm">  */</span>
+<span class="lineno"> 93</span>   
+<span class="lineno"> 94</span> <span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">thirdLoginWithLoginType:</span><span class="p">(</span><span class="n">YSThirdLoginType</span><span class="p">)</span><span class="nv">loginType</span>
+<span class="lineno"> 95</span>   
+<span class="lineno"> 96</span>   <span class="p">{</span>
+<span class="lineno"> 97</span>   
+<span class="lineno"> 98</span>   	<span class="c1">// 与登录几乎一致</span>
+<span class="lineno"> 99</span>   
+<span class="lineno">100</span>   	<span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">loginInteractor</span>  <span class="nl">thirdLoginWithLoginType</span><span class="p">:</span><span class="n">loginType</span>
+<span class="lineno">101</span>   
+<span class="lineno">102</span>   	                                <span class="nl">viewController</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">userInterface</span>
+<span class="lineno">103</span>   
+<span class="lineno">104</span>   	                                  <span class="nl">successBlock</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="kt">id</span> <span class="n">responseObject</span><span class="p">){</span>
+<span class="lineno">105</span>   
+<span class="lineno">106</span>   		<span class="c1">// 登录成功 交给线框进行调转</span>
+<span class="lineno">107</span>   
+<span class="lineno">108</span>   		<span class="p">[</span><span class="nb">self</span> <span class="nl">showViewControllerWithKey</span><span class="p">:</span><span class="n">kYSTabbarViewControllerKey</span> 
+<span class="lineno">109</span>   
+<span class="lineno">110</span>   		<span class="nl">params</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+<span class="lineno">111</span>   
+<span class="lineno">112</span>   	<span class="p">}</span>
+<span class="lineno">113</span>   
+<span class="lineno">114</span>   	<span class="nl">failedBlock</span><span class="p">:</span><span class="o">^</span> <span class="p">(</span><span class="bp">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span>
+<span class="lineno">115</span>   
+<span class="lineno">116</span>   	<span class="p">{</span>
+<span class="lineno">117</span>   
+<span class="lineno">118</span>   		<span class="c1">// 1.登录失败 进行错误提示</span>
+<span class="lineno">119</span>   
+<span class="lineno">120</span>   		<span class="p">[[</span><span class="n">YSProgressHUD</span> <span class="n">shareInstance</span><span class="p">]</span><span class="nl">showAutoDisapperWithTitle</span><span class="p">:[</span><span class="n">error</span> <span class="n">domain</span><span class="p">]];</span>
+<span class="lineno">121</span>   
+<span class="lineno">122</span>   		<span class="c1">// 2.根据错误码，进行异常流程处理 因为异常处理流程主要涉及到页面的跳转和错误的提示 因此将该驱动逻辑放在展示器中是最合适的地方</span>
+<span class="lineno">123</span>   
+<span class="lineno">124</span>   		<span class="p">[</span><span class="nb">self</span> <span class="nl">routerViewWithLoginErrorCode</span><span class="p">:[</span><span class="n">error</span> <span class="n">code</span><span class="p">]];</span>
+<span class="lineno">125</span>   
+<span class="lineno">126</span>   	<span class="p">}];</span>
+<span class="lineno">127</span>   
+<span class="lineno">128</span>   <span class="p">}</span>
+<span class="lineno">129</span> 
+<span class="lineno">130</span> <span class="c1">//...略</span>
+<span class="lineno">131</span> 
+<span class="lineno">132</span> <span class="n">pragma</span> <span class="n">mark</span> <span class="o">-</span><span class="n">private</span>
+<span class="lineno">133</span> 
+<span class="lineno">134</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">showViewControllerWithKey</span><span class="p">:(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">key</span> <span class="nl">params</span><span class="p">:(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span>
+<span class="lineno">135</span>   
+<span class="lineno">136</span>   <span class="p">{</span>
+<span class="lineno">137</span>   
+<span class="lineno">138</span>   	<span class="c1">// 数据对象</span>
+<span class="lineno">139</span>   
+<span class="lineno">140</span>   	<span class="n">YSMessageInfo</span> <span class="o">*</span><span class="n">messageInfo</span> <span class="o">=</span> <span class="p">[</span><span class="n">YSMessageInfo</span> <span class="nl">initwihMessageName</span><span class="p">:</span><span class="n">key</span> <span class="nl">params</span><span class="p">:</span><span class="n">params</span><span class="p">];</span>
+<span class="lineno">141</span>   
+<span class="lineno">142</span>   	<span class="c1">// 页面跳转</span>
+<span class="lineno">143</span>   
+<span class="lineno">144</span>   	<span class="p">[</span><span class="nb">self</span><span class="p">.</span><span class="n">loginWireFrame</span> <span class="nl">routingViewController</span><span class="p">:</span><span class="nb">self</span><span class="p">.</span><span class="n">userInterface</span> 			   
+<span class="lineno">145</span>   
+<span class="lineno">146</span>   	<span class="nl">messageOfPage</span><span class="p">:</span><span class="n">messageInfo</span><span class="p">];</span>
+<span class="lineno">147</span>   
+<span class="lineno">148</span>   <span class="p">}</span>
+<span class="lineno">149</span>   
+<span class="lineno">150</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">routerViewWithLoginErrorCode</span><span class="p">:(</span><span class="kt">int</span><span class="p">)</span><span class="n">code</span>
+<span class="lineno">151</span>   
+<span class="lineno">152</span>   <span class="p">{</span>
+<span class="lineno">153</span>   
+<span class="lineno">154</span>   	<span class="c1">// 根据错误码进行路由分法 </span>
+<span class="lineno">155</span>   
+<span class="lineno">156</span>   	<span class="c1">// 略</span>
+<span class="lineno">157</span>   
+<span class="lineno">158</span>   <span class="p">}</span></code></pre></div>
 
 <p>从上面可以看到，展示器的任务就是实现YSLoginModuleInterface协议，需要路由页面时则交给线框去处理，需要具体业务接口处理时，则交给交互器去处理，需要页面提示或逻辑判断进行页面导航时，则在本类中进行。此外，我们看到线框在此处的应用是根据给定一个key值以及一个messageInfo的参数进行调转。</p>
 
@@ -665,109 +640,98 @@
 
 <p>线框，导航的处理中心。在线框中，我们可以集中处理页面跳转的方式、自定义跳转动画的设置等。</p>
 
-<div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="lineno">  1</span> <span class="k">@protocol</span> <span class="nc">YSWireFrameProtocol</span> <span class="o">&lt;</span><span class="bp">NSObject</span><span class="o">&gt;</span>
-<span class="lineno">  2</span> 
-<span class="lineno">  3</span> <span class="cm">/**</span>
-<span class="lineno">  4</span> 
-<span class="lineno">  5</span> <span class="cm">- 视图控制器路由</span>
-<span class="lineno">  6</span> <span class="cm">  </span>
-<span class="lineno">  7</span> <span class="cm">  *</span>
-<span class="lineno">  8</span> <span class="cm">  </span>
-<span class="lineno">  9</span> <span class="cm">- @param ViewController 视图控制器</span>
-<span class="lineno"> 10</span> <span class="cm">  </span>
-<span class="lineno"> 11</span> <span class="cm">- @param messager       消息</span>
-<span class="lineno"> 12</span> <span class="cm">  </span>
-<span class="lineno"> 13</span> <span class="cm">  */</span>
-<span class="lineno"> 14</span>   
-<span class="lineno"> 15</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">routingViewController</span><span class="p">:(</span><span class="bp">UIViewController</span><span class="o">*</span><span class="p">)</span><span class="n">ViewController</span>
-<span class="lineno"> 16</span>   
-<span class="lineno"> 17</span>   <span class="err">```</span> 
-<span class="lineno"> 18</span>             <span class="nl">messageOfPage</span><span class="p">:(</span><span class="n">YSMessageInfo</span><span class="o">*</span><span class="p">)</span><span class="n">messager</span><span class="p">;</span>
-<span class="lineno"> 19</span>   <span class="err">```</span>
-<span class="lineno"> 20</span> 
-<span class="lineno"> 21</span> <span class="k">@end</span>
-<span class="lineno"> 22</span> 
-<span class="lineno"> 23</span> <span class="k">@interface</span> <span class="nc">YSWireFrame</span> : <span class="bp">NSObject</span> <span class="o">&lt;</span><span class="n">YSWireFrameProtocol</span><span class="o">&gt;</span>
-<span class="lineno"> 24</span> 
-<span class="lineno"> 25</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">routingViewController</span><span class="p">:(</span><span class="bp">UIViewController</span><span class="o">*</span><span class="p">)</span><span class="n">ViewController</span>
-<span class="lineno"> 26</span>   
-<span class="lineno"> 27</span>   <span class="err">```</span> 
-<span class="lineno"> 28</span>             <span class="nl">messageOfPage</span><span class="p">:(</span><span class="n">YSMessageInfo</span> <span class="o">*</span><span class="p">)</span><span class="n">messager</span>
-<span class="lineno"> 29</span>   <span class="err">```</span>
-<span class="lineno"> 30</span>   
-<span class="lineno"> 31</span>   <span class="p">{</span>
-<span class="lineno"> 32</span>   
-<span class="lineno"> 33</span>   	<span class="n">NSParameterAssert</span><span class="p">(</span><span class="n">messager</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">);</span>
-<span class="lineno"> 34</span>   
-<span class="lineno"> 35</span>   	<span class="n">NSParameterAssert</span><span class="p">(</span><span class="n">ViewController</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">);</span>
-<span class="lineno"> 36</span>   
-<span class="lineno"> 37</span>   	
-<span class="lineno"> 38</span>   
-<span class="lineno"> 39</span>   	<span class="kt">SEL</span> <span class="n">selector</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">selectorOfClassName</span><span class="p">:</span><span class="n">messager</span><span class="p">.</span><span class="n">messageNameStr</span><span class="p">];</span>
-<span class="lineno"> 40</span>   
-<span class="lineno"> 41</span>   	<span class="kt">IMP</span> <span class="n">imp</span>      <span class="o">=</span> <span class="p">[</span><span class="nb">self</span>  <span class="nl">methodForSelector</span><span class="p">:</span><span class="n">selector</span><span class="p">];</span>
-<span class="lineno"> 42</span>   
-<span class="lineno"> 43</span>   	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="p">)(</span><span class="kt">id</span><span class="p">,</span><span class="kt">SEL</span><span class="p">,</span><span class="bp">UIViewController</span><span class="o">*</span><span class="p">,</span><span class="bp">NSDictionary</span><span class="o">*</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">imp</span><span class="p">;</span>
-<span class="lineno"> 44</span>   
-<span class="lineno"> 45</span>   	<span class="n">func</span><span class="p">(</span><span class="nb">self</span> <span class="p">,</span><span class="n">selector</span><span class="p">,</span><span class="n">ViewController</span><span class="p">,</span><span class="n">messager</span><span class="p">.</span><span class="n">paramsDic</span><span class="p">);</span>
-<span class="lineno"> 46</span>   
-<span class="lineno"> 47</span>   <span class="p">}</span>
-<span class="lineno"> 48</span>   
-<span class="lineno"> 49</span> <span class="o">-</span> <span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nl">selectorOfClassName</span><span class="p">:(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">messageName</span>
-<span class="lineno"> 50</span>   
-<span class="lineno"> 51</span>   <span class="p">{</span>
-<span class="lineno"> 52</span>   
-<span class="lineno"> 53</span>   	<span class="k">static</span> <span class="bp">NSDictionary</span> <span class="o">*</span><span class="n">selectordictionary</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
-<span class="lineno"> 54</span>   
-<span class="lineno"> 55</span>   	<span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">selectordictionary</span><span class="p">)</span>
-<span class="lineno"> 56</span>   
-<span class="lineno"> 57</span>   	<span class="p">{</span>
-<span class="lineno"> 58</span>   
-<span class="lineno"> 59</span>   		<span class="n">selectordictionary</span> <span class="o">=</span> <span class="l">@{</span>
-<span class="lineno"> 60</span>   
-<span class="lineno"> 61</span>   		<span class="nl">kShowRegistUserOneViewController</span><span class="p">:</span>
-<span class="lineno"> 62</span>   
-<span class="lineno"> 63</span>   		<span class="p">[</span><span class="bp">NSValue</span> <span class="nl">valueWithPointer</span><span class="p">:</span>
-<span class="lineno"> 64</span>   
-<span class="lineno"> 65</span>   		<span class="k">@selector</span><span class="p">(</span><span class="nl">showRegistUserOneViewController</span><span class="p">:</span><span class="nl">params</span><span class="p">:)],</span>
-<span class="lineno"> 66</span>   
-<span class="lineno"> 67</span>   		<span class="nl">kShowTabBarViewController</span><span class="p">:</span>
-<span class="lineno"> 68</span>   
-<span class="lineno"> 69</span>   		<span class="p">[</span><span class="bp">NSValue</span> <span class="nl">valueWithPointer</span><span class="p">:</span>   <span class="k">@selector</span><span class="p">(</span><span class="nl">showTabbarViewController</span><span class="p">:</span><span class="nl">params</span><span class="p">:)]</span><span class="l">}</span><span class="p">;</span>
-<span class="lineno"> 70</span>   
-<span class="lineno"> 71</span>     <span class="p">}</span>
-<span class="lineno"> 72</span> 
-<span class="lineno"> 73</span> 	<span class="bp">NSValue</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">selectordictionary</span> <span class="nl">valueForKey</span><span class="p">:</span><span class="n">messageName</span><span class="p">];</span>
-<span class="lineno"> 74</span> 
-<span class="lineno"> 75</span> 	<span class="k">return</span> <span class="n">value</span> <span class="o">?</span> <span class="p">[</span><span class="n">value</span> <span class="n">pointerValue</span><span class="p">]</span><span class="o">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">emptyMothedViewController</span><span class="p">:</span><span class="nl">params</span><span class="p">:);</span>
-<span class="lineno"> 76</span> 
-<span class="lineno"> 77</span> <span class="p">}</span>
-<span class="lineno"> 78</span> 
-<span class="lineno"> 79</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">emptyMothedViewController</span><span class="p">:(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewController</span> <span class="nl">params</span><span class="p">:(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span>
-<span class="lineno"> 80</span>   
-<span class="lineno"> 81</span>   <span class="p">{</span>
-<span class="lineno"> 82</span>   
-<span class="lineno"> 83</span>   	<span class="n">DDLogCError</span><span class="p">(</span><span class="s">@&quot;不存在对应的选择器方法,请注意实现！&quot;</span><span class="p">);</span>
-<span class="lineno"> 84</span>   
-<span class="lineno"> 85</span>   <span class="p">}</span>
-<span class="lineno"> 86</span>   
-<span class="lineno"> 87</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">showRegistUserOneViewController</span><span class="p">:(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewController</span> <span class="nl">params</span><span class="p">:(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span>
-<span class="lineno"> 88</span>   
-<span class="lineno"> 89</span>   <span class="p">{</span>
-<span class="lineno"> 90</span>   
-<span class="lineno"> 91</span>   	<span class="c1">//具体跳转处理  </span>
-<span class="lineno"> 92</span>   
-<span class="lineno"> 93</span>   <span class="p">}</span>
-<span class="lineno"> 94</span>   
-<span class="lineno"> 95</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">showTabbarViewController</span><span class="p">:(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewController</span> <span class="nl">params</span><span class="p">:(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span>
-<span class="lineno"> 96</span>   
-<span class="lineno"> 97</span>   <span class="p">{</span>
-<span class="lineno"> 98</span>   
-<span class="lineno"> 99</span>   	<span class="c1">//具体跳转处理  </span>
-<span class="lineno">100</span>   
-<span class="lineno">101</span>   <span class="p">}</span>
-<span class="lineno">102</span>   
-<span class="lineno">103</span>   <span class="p">...</span></code></pre></div>
+<div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="lineno"> 1</span> <span class="k">@protocol</span> <span class="nc">YSWireFrameProtocol</span> <span class="o">&lt;</span><span class="bp">NSObject</span><span class="o">&gt;</span>
+<span class="lineno"> 2</span> 
+<span class="lineno"> 3</span> <span class="cm">/**</span>
+<span class="lineno"> 4</span> 
+<span class="lineno"> 5</span> <span class="cm">- 视图控制器路由</span>
+<span class="lineno"> 6</span> <span class="cm">  </span>
+<span class="lineno"> 7</span> <span class="cm">  *</span>
+<span class="lineno"> 8</span> <span class="cm">  </span>
+<span class="lineno"> 9</span> <span class="cm">- @param ViewController 视图控制器</span>
+<span class="lineno">10</span> <span class="cm">  </span>
+<span class="lineno">11</span> <span class="cm">- @param messager       消息</span>
+<span class="lineno">12</span> <span class="cm">  </span>
+<span class="lineno">13</span> <span class="cm">  */</span>
+<span class="lineno">14</span>   
+<span class="lineno">15</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">routingViewController</span><span class="p">:(</span><span class="bp">UIViewController</span><span class="o">*</span><span class="p">)</span><span class="n">ViewController</span>
+<span class="lineno">16</span>                 <span class="nl">messageOfPage</span><span class="p">:(</span><span class="n">YSMessageInfo</span><span class="o">*</span><span class="p">)</span><span class="n">messager</span><span class="p">;</span>
+<span class="lineno">17</span> <span class="k">@end</span>
+<span class="lineno">18</span> 
+<span class="lineno">19</span> <span class="k">@interface</span> <span class="nc">YSWireFrame</span> : <span class="bp">NSObject</span> <span class="o">&lt;</span><span class="n">YSWireFrameProtocol</span><span class="o">&gt;</span>
+<span class="lineno">20</span> 
+<span class="lineno">21</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">routingViewController</span><span class="p">:(</span><span class="bp">UIViewController</span><span class="o">*</span><span class="p">)</span><span class="n">ViewController</span>
+<span class="lineno">22</span>             <span class="nl">messageOfPage</span><span class="p">:(</span><span class="n">YSMessageInfo</span> <span class="o">*</span><span class="p">)</span><span class="n">messager</span>
+<span class="lineno">23</span> <span class="p">{</span>
+<span class="lineno">24</span>   
+<span class="lineno">25</span>   	<span class="n">NSParameterAssert</span><span class="p">(</span><span class="n">messager</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">);</span>
+<span class="lineno">26</span>   
+<span class="lineno">27</span>   	<span class="n">NSParameterAssert</span><span class="p">(</span><span class="n">ViewController</span> <span class="o">!=</span> <span class="nb">nil</span><span class="p">);</span>
+<span class="lineno">28</span>   
+<span class="lineno">29</span>   	
+<span class="lineno">30</span>   
+<span class="lineno">31</span>   	<span class="kt">SEL</span> <span class="n">selector</span> <span class="o">=</span> <span class="p">[</span><span class="nb">self</span> <span class="nl">selectorOfClassName</span><span class="p">:</span><span class="n">messager</span><span class="p">.</span><span class="n">messageNameStr</span><span class="p">];</span>
+<span class="lineno">32</span>   
+<span class="lineno">33</span>   	<span class="kt">IMP</span> <span class="n">imp</span>      <span class="o">=</span> <span class="p">[</span><span class="nb">self</span>  <span class="nl">methodForSelector</span><span class="p">:</span><span class="n">selector</span><span class="p">];</span>
+<span class="lineno">34</span>   
+<span class="lineno">35</span>   	<span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">func</span><span class="p">)(</span><span class="kt">id</span><span class="p">,</span><span class="kt">SEL</span><span class="p">,</span><span class="bp">UIViewController</span><span class="o">*</span><span class="p">,</span><span class="bp">NSDictionary</span><span class="o">*</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="n">imp</span><span class="p">;</span>
+<span class="lineno">36</span>   
+<span class="lineno">37</span>   	<span class="n">func</span><span class="p">(</span><span class="nb">self</span> <span class="p">,</span><span class="n">selector</span><span class="p">,</span><span class="n">ViewController</span><span class="p">,</span><span class="n">messager</span><span class="p">.</span><span class="n">paramsDic</span><span class="p">);</span>
+<span class="lineno">38</span>   
+<span class="lineno">39</span> <span class="p">}</span>
+<span class="lineno">40</span>   
+<span class="lineno">41</span> <span class="o">-</span> <span class="p">(</span><span class="kt">SEL</span><span class="p">)</span><span class="nl">selectorOfClassName</span><span class="p">:(</span><span class="bp">NSString</span> <span class="o">*</span><span class="p">)</span><span class="n">messageName</span>
+<span class="lineno">42</span>   
+<span class="lineno">43</span> <span class="p">{</span>
+<span class="lineno">44</span>   
+<span class="lineno">45</span>   	<span class="k">static</span> <span class="bp">NSDictionary</span> <span class="o">*</span><span class="n">selectordictionary</span> <span class="o">=</span> <span class="nb">nil</span><span class="p">;</span>
+<span class="lineno">46</span>   
+<span class="lineno">47</span>   	<span class="k">if</span><span class="p">(</span><span class="o">!</span><span class="n">selectordictionary</span><span class="p">)</span>
+<span class="lineno">48</span>   
+<span class="lineno">49</span>   	<span class="p">{</span>
+<span class="lineno">50</span>   
+<span class="lineno">51</span>   		<span class="n">selectordictionary</span> <span class="o">=</span> <span class="l">@{</span>
+<span class="lineno">52</span>   
+<span class="lineno">53</span>   		<span class="nl">kShowRegistUserOneViewController</span><span class="p">:</span>
+<span class="lineno">54</span>   
+<span class="lineno">55</span>   		<span class="p">[</span><span class="bp">NSValue</span> <span class="nl">valueWithPointer</span><span class="p">:</span>
+<span class="lineno">56</span>   
+<span class="lineno">57</span>   		<span class="k">@selector</span><span class="p">(</span><span class="nl">showRegistUserOneViewController</span><span class="p">:</span><span class="nl">params</span><span class="p">:)],</span>
+<span class="lineno">58</span>   
+<span class="lineno">59</span>   		<span class="nl">kShowTabBarViewController</span><span class="p">:</span>
+<span class="lineno">60</span>   
+<span class="lineno">61</span>   		<span class="p">[</span><span class="bp">NSValue</span> <span class="nl">valueWithPointer</span><span class="p">:</span>   <span class="k">@selector</span><span class="p">(</span><span class="nl">showTabbarViewController</span><span class="p">:</span><span class="nl">params</span><span class="p">:)]</span><span class="l">}</span><span class="p">;</span>
+<span class="lineno">62</span>   
+<span class="lineno">63</span>     <span class="p">}</span>
+<span class="lineno">64</span> 
+<span class="lineno">65</span> 	<span class="bp">NSValue</span> <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="p">[</span><span class="n">selectordictionary</span> <span class="nl">valueForKey</span><span class="p">:</span><span class="n">messageName</span><span class="p">];</span>
+<span class="lineno">66</span> 
+<span class="lineno">67</span> 	<span class="k">return</span> <span class="n">value</span> <span class="o">?</span> <span class="p">[</span><span class="n">value</span> <span class="n">pointerValue</span><span class="p">]</span><span class="o">:</span><span class="k">@selector</span><span class="p">(</span><span class="nl">emptyMothedViewController</span><span class="p">:</span><span class="nl">params</span><span class="p">:);</span>
+<span class="lineno">68</span> 
+<span class="lineno">69</span> <span class="p">}</span>
+<span class="lineno">70</span> 
+<span class="lineno">71</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">emptyMothedViewController</span><span class="p">:(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewController</span> <span class="nl">params</span><span class="p">:(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span>
+<span class="lineno">72</span> <span class="p">{</span>
+<span class="lineno">73</span>   
+<span class="lineno">74</span>   	<span class="n">DDLogCError</span><span class="p">(</span><span class="s">@&quot;不存在对应的选择器方法,请注意实现！&quot;</span><span class="p">);</span>
+<span class="lineno">75</span>   
+<span class="lineno">76</span> <span class="p">}</span>
+<span class="lineno">77</span>   
+<span class="lineno">78</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">showRegistUserOneViewController</span><span class="p">:(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewController</span> <span class="nl">params</span><span class="p">:(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span>
+<span class="lineno">79</span> <span class="p">{</span>
+<span class="lineno">80</span>   
+<span class="lineno">81</span>   	<span class="c1">//具体跳转处理  </span>
+<span class="lineno">82</span>   
+<span class="lineno">83</span> <span class="p">}</span>
+<span class="lineno">84</span>   
+<span class="lineno">85</span> <span class="o">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nl">showTabbarViewController</span><span class="p">:(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="n">viewController</span> <span class="nl">params</span><span class="p">:(</span><span class="bp">NSDictionary</span> <span class="o">*</span><span class="p">)</span><span class="n">params</span>
+<span class="lineno">86</span> <span class="p">{</span>
+<span class="lineno">87</span>   
+<span class="lineno">88</span>   	<span class="c1">//具体跳转处理  </span>
+<span class="lineno">89</span>   
+<span class="lineno">90</span> <span class="p">}</span>
+<span class="lineno">91</span>   
+<span class="lineno">92</span> <span class="p">...</span></code></pre></div>
 
 <p>在线框中，实现了跳转YSWireFrameProtocol协议。在具体实现中，创建了一个静态的字典来存储key值和对应的选择器方法。如果找不到方法，则调用默认的emptyMothedViewController方法。在具体的跳转中，可以定制化跳转风格和动画。</p>
 
@@ -819,7 +783,7 @@
 
 <p><img src="/images/viper/Login5.png" alt="" /></p>
 
-<p>是不是比较清晰了？我们首先分析了模块的核心功能，创建了YSLoginModuleInterface协议。依次将涉及的内容分为5个模块，每个模块只做一件事情，最后通工厂类方法，按照职责创建之间的依赖关系。只要你对VIPER有这样一个概念，那本篇的目的也就达到了。任何架构的学习和应用，也必须经过长久的实践和探索。</p>
+<p>是不是比较清晰了？我们首先分析了模块的核心功能，创建了YSLoginModuleInterface协议。依次将涉及的内容分为5个模块，每个模块只做一件事情，最后通过工厂类方法，按照职责创建之间的依赖关系。只要你对VIPER有这样一个概念，那本篇的目的也就达到了。任何架构的学习和应用，也必须经过长久的实践和探索。</p>
 
 <pre><code>注意了,在模块引用中,我使用了strong强引用,会导致userinterface和presenter之间会存在循环
 
@@ -848,7 +812,7 @@ nil打破循环强引用即可。
 
 <p>5.最后，希望本篇文章对大家有所启迪。不管你认不认同VIPER架构，任何新技术的产生本身就需要质疑和不断的改进，只要你认为对你有所帮助，那么就大胆地去实践吧！</p>
 
-<p><strong>你也可以在slides上浏览<a href="http://slides.com/zhilshi/deck/live">VIPER浅谈</a></strong></p>
+<p><strong>你也可以在slides上浏览<a href="http://slides.com/zhilshi/deck#/">VIPER浅谈</a></strong></p>
 
 <hr />
 

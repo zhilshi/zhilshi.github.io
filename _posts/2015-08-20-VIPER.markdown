@@ -261,11 +261,8 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
   	*/
   
 - (void)loginInWithInfo:(id)userInfo
-  
-  ``` 
-       successBlock:(SuccessBlock) successBlock
-        failedBlock:(FailureBlock) faieldBlock;
-  ```
+           successBlock:(SuccessBlock) successBlock
+            failedBlock:(FailureBlock) faieldBlock;
 
 /**
 
@@ -284,14 +281,9 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
   */
   
 - (void)thirdLoginWithLoginType:(YSThirdLoginType)loginType
-  
-  ``` 
-             viewController:(UIViewController *) viewController
-               successBlock:(SuccessBlock) successBlock
-                failedBlock:(FailureBlock) faieldBlock;
-  ```
-  
-  		
+                 viewController:(UIViewController *) viewController
+                   successBlock:(SuccessBlock) successBlock
+                    failedBlock:(FailureBlock) faieldBlock;
   
   /**
   
@@ -308,12 +300,8 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
   */
   
 - (void)fetchAvatarImageWithAccount:(NSString *)accountStr
-  
-  ``` 
-                   successBlock:(SuccessBlock) successBlock
-                    failedBlock:(FailureBlock) faieldBlock;
-  ```
-
+                       successBlock:(SuccessBlock) successBlock
+                        failedBlock:(FailureBlock) faieldBlock;
 // 获取缓存账户信息
 
 - (void)getLastCacheingInfo:(void (^)(NSString *accountStr, NSString *password))userInfoBlock; 
@@ -327,37 +315,33 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 {% highlight objective-c linenos %}
 
 - (void)loginInWithInfo:(id)userInfo
+           successBlock:(SuccessBlock) successBlock
+            failedBlock:(FailureBlock) faieldBlock
+    {
   
-  ``` 
-       successBlock:(SuccessBlock) successBlock
-        failedBlock:(FailureBlock) faieldBlock
-  ```
-  
-  {
-  
-  	[EzvizUser login:userInfo success:^(id request, id responseObject) {
-  
-  		//这里就是需要的逻辑处理
-  
-  		// 包括更新本地数据缓存
-  
-  		// 需要进行的关联请求操作
-  
-  		// .. 处理完跟登录成功绑定的相关业务逻辑后 回调展示器，进行相关展示操作
-  
-  		successBlock(nil);
-  
-  	
-  
-  	} failure:^(NSError *error, NSString *message) {
-  
-  		// 登录异常 我们需要根据错误码进行处理
-  
-  		// 需要根据各种错误码进行导航跳转进入不同处理流程，此外无多余的业务逻辑
-  
-  		faieldBlock(error);
-  
-  	}];
+        [EzvizUser login:userInfo success:^(id request, id responseObject) {
+
+            //这里就是需要的逻辑处理
+
+            // 包括更新本地数据缓存
+
+            // 需要进行的关联请求操作
+
+            // .. 处理完跟登录成功绑定的相关业务逻辑后 回调展示器，进行相关展示操作
+
+            successBlock(nil);
+
+
+
+        } failure:^(NSError *error, NSString *message) {
+
+            // 登录异常 我们需要根据错误码进行处理
+
+            // 需要根据各种错误码进行导航跳转进入不同处理流程，此外无多余的业务逻辑
+
+            faieldBlock(error);
+
+        }];
   
   }
   
@@ -368,13 +352,9 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 {% highlight objective-c linenos %}
 
 - (void)thirdLoginWithLoginType:(YSThirdLoginType)loginType
-  
-  ``` 
-             viewController:(UIViewController *) viewController
-               successBlock:(SuccessBlock) successBlock
-                failedBlock:(FailureBlock) faieldBlock
-  ```
-  
+                 viewController:(UIViewController *) viewController
+                   successBlock:(SuccessBlock) successBlock
+                    failedBlock:(FailureBlock) faieldBlock
   {
   
   	// 有一个单独的第三方处理中心 获取对应的token userid等相关信息
@@ -406,12 +386,8 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 {% highlight objective-c linenos %}
 
 - (void)fetchAvatarImageWithAccount:(NSString *)accountStr
-  
-  ``` 
-                   successBlock:(SuccessBlock) successBlock
-                    failedBlock:(FailureBlock) faieldBlock
-  ```
-  
+                       successBlock:(SuccessBlock) successBlock
+                        failedBlock:(FailureBlock) faieldBlock
   {
   
   	// 根据accontStr  获取数据库或本地文件、缓存对应的头像
@@ -477,7 +453,6 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
   	if (![YSCheckFormart checkUserInfo:userInfo key:kUserInfoKey])
   
   	{
-  
   		//格式错误，则进行页面提示 所有的提示基本上都可以在展示器中进行
   
   		[[YSProgressHUD shareInstance]showAutoDisapperWithTitle:@"输入格式错误"];
@@ -488,7 +463,7 @@ But！！对于MVC ，你有没有听过另一种解释，叫 Massive-View-Contr
 
 	//正确，则调用交互器
 
-	[self.loginInteractor loginInWithInfo:userInfo 								  successBlock:^(id responseObject)
+	[self.loginInteractor loginInWithInfo:userInfo 	successBlock:^(id responseObject)
 
 	{
 
@@ -644,7 +619,6 @@ pragma mark -private
 
 {% highlight objective-c linenos %}
 
-	
 
 @protocol YSWireFrameProtocol <NSObject>
 
@@ -661,22 +635,14 @@ pragma mark -private
   */
   
 - (void)routingViewController:(UIViewController*)ViewController
-  
-  ``` 
-            messageOfPage:(YSMessageInfo*)messager;
-  ```
-
+                messageOfPage:(YSMessageInfo*)messager;
 @end
 
 @interface YSWireFrame : NSObject <YSWireFrameProtocol>
 
 - (void)routingViewController:(UIViewController*)ViewController
-  
-  ``` 
             messageOfPage:(YSMessageInfo *)messager
-  ```
-  
-  {
+{
   
   	NSParameterAssert(messager != nil);
   
@@ -692,11 +658,11 @@ pragma mark -private
   
   	func(self ,selector,ViewController,messager.paramsDic);
   
-  }
+}
   
 - (SEL)selectorOfClassName:(NSString *)messageName
   
-  {
+{
   
   	static NSDictionary *selectordictionary = nil;
   
@@ -725,30 +691,27 @@ pragma mark -private
 }
 
 - (void)emptyMothedViewController:(UIViewController *)viewController params:(NSDictionary *)params
-  
-  {
+{
   
   	DDLogCError(@"不存在对应的选择器方法,请注意实现！");
   
-  }
+}
   
 - (void)showRegistUserOneViewController:(UIViewController *)viewController params:(NSDictionary *)params
-  
-  {
+{
   
   	//具体跳转处理  
   
-  }
+}
   
 - (void)showTabbarViewController:(UIViewController *)viewController params:(NSDictionary *)params
-  
-  {
+{
   
   	//具体跳转处理  
   
-  }
+}
   
-  ...
+...
   
   {% endhighlight %}
 
