@@ -5,8 +5,8 @@
     <description></description>
     <link>http://yourdomain.com/</link>
     <atom:link href="http://yourdomain.com/feed.xml" rel="self" type="application/rss+xml"/>
-    <pubDate>Wed, 26 Aug 2015 14:06:53 +0800</pubDate>
-    <lastBuildDate>Wed, 26 Aug 2015 14:06:53 +0800</lastBuildDate>
+    <pubDate>Wed, 26 Aug 2015 19:17:09 +0800</pubDate>
+    <lastBuildDate>Wed, 26 Aug 2015 19:17:09 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
@@ -137,15 +137,8 @@
 &lt;span class=&quot;p&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;BOOL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;isMovingToParentViewController&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NS_AVAILABLE_IOS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;BOOL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;isMovingFromParentViewController&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NS_AVAILABLE_IOS&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;mi&quot;&gt;5&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;_0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;table&gt;
-  &lt;tbody&gt;
-    &lt;tr&gt;
-      &lt;td&gt;对于视图的模态状态,显而易见,这几个方法是中间过渡的状态表示。比如我们可以通过判断**([self isBeingDismissed]&lt;/td&gt;
-      &lt;td&gt; &lt;/td&gt;
-      &lt;td&gt;[self isMovingFromParentViewController])**表达式,来确定视图是将会被dismiss掉。&lt;/td&gt;
-    &lt;/tr&gt;
-  &lt;/tbody&gt;
-&lt;/table&gt;
+&lt;p&gt;对于视图的模态状态,显而易见,这几个方法是中间过渡的状态表示。比如我们可以通过判断
+&lt;strong&gt;([self isBeingDismissed]||[self isMovingFromParentViewController])&lt;/strong&gt;表达式,来确定视图是将会被dismiss掉。&lt;/p&gt;
 
 &lt;p&gt;因此,我们可以修改下&lt;strong&gt;szl_findCurrentTopViewControllerFromViewController:&lt;/strong&gt;方法,如下&lt;/p&gt;
 
@@ -180,10 +173,66 @@
 
 &lt;p&gt;你看,简单的获取当前最前页,写了这么多的代码,但我们依然不能完全肯定没有遗落之处。比如session异常的通知,很有可能在任何状态下发生!那么,有没有更好的方式？&lt;/p&gt;
 
-&lt;p&gt;然后,我想到了运行时。不管视图中间状态如何,一个视图控制器被添加到当前窗口上,会调用&lt;strong&gt;viewWillAppear&lt;/strong&gt;和&lt;strong&gt;viewDidAppear&lt;/strong&gt;,&lt;/p&gt;
+&lt;p&gt;其实视图的跳转,都是在主线程上一个视图控制器被添加到当前窗口上,当前的视图,会调用&lt;strong&gt;viewWillAppear&lt;/strong&gt;和&lt;strong&gt;viewDidAppear&lt;/strong&gt;,那为何不直接用一静态全局变量指定当前的视图控制器?为了避免每个类中进行调用,可以考虑使用&lt;strong&gt;Method Swizzling&lt;/strong&gt;来获取当前的视图控制器.其次再根据模态情况下进行处理。这样避免了方法一种繁琐的递归查找,效率更高。&lt;/p&gt;
 
-&lt;p&gt;待续
-###跳转&lt;/p&gt;
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-objective-c&quot; data-lang=&quot;objective-c&quot;&gt;&lt;span class=&quot;p&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;szl_viewDidAppear:&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;BOOL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;animated&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;bp&quot;&gt;NSString&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;classname&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;NSStringFromClass&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;class&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;([&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;classname&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;hasPrefix&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;@&amp;quot;SZL&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;])&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;curViewController&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;NSLog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;@&amp;quot;curViewController is %@&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;curViewController&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt; &lt;span class=&quot;nl&quot;&gt;szl_viewDidAppear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;animated&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;];&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+
+&lt;span class=&quot;p&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;void&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;load&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;SEL&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;originalSelector&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;@selector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;viewDidAppear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:);&lt;/span&gt;
+    &lt;span class=&quot;kt&quot;&gt;SEL&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;overrideSelector&lt;/span&gt;  &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt;  &lt;span class=&quot;k&quot;&gt;@selector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nl&quot;&gt;szl_viewDidAppear&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Method&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;originalMethod&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;class_getInstanceMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;originalSelector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;Method&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;overrideMethod&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;class_getInstanceMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;overrideSelector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;class_addMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;originalSelector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method_getImplementation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;overrideMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method_getTypeEncoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;overrideMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)))&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;class_replaceMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;overrideSelector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method_getImplementation&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;originalMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;),&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;method_getTypeEncoding&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;originalMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;method_exchangeImplementations&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;originalMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;overrideMethod&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;该load实现参考stackoverflow上的实现。在交互方法中,增加了一步前缀判断。此外,对于特殊的系统视图控制器比如相册、拍照等也需要考虑进来。获取到后,再根据方法一的后续判断进行处理。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;跳转&lt;/h3&gt;
+&lt;p&gt;关于跳转,很多时候我们需要处理复杂的页面跳转。比如session异常的情况,业务设计需要不管在任何页面,你需要先回到UITabbarViewConroller的当前页,再模态一个登录视图控制器提示用户进行登录操作。该怎么设计呢??基本上思路是这样子的:&lt;/p&gt;
+
+&lt;ol&gt;
+  &lt;li&gt;所有的模态视图控制器移除,直到selectedViewController&lt;/li&gt;
+  &lt;li&gt;在selectedViewController上popToRootViewController&lt;/li&gt;
+  &lt;li&gt;创建视图控制器,进行模态展示&lt;/li&gt;
+&lt;/ol&gt;
+
+&lt;p&gt;第一步操作其实很简单,在apple API里对于&lt;strong&gt;dismissViewControllerAnimated:completion&lt;/strong&gt;说明:&lt;/p&gt;
+
+&lt;p&gt;&lt;code&gt;if you present several view controllers in succession, thus building a stack of presented view controllers, calling this method on
+ a view controller lower in the stack dismisses its immediate child view controller and all view controllers above that child on
+  the stack.&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;意识是说当存在多个模态的视图控制器构成的堆栈里,只要在这个堆栈里找到低层级的模态视图调用&lt;strong&gt;dismiss&lt;/strong&gt;,在它之上的缘由视图控制器都会移除。
+这里需要注意的是,如果使用&lt;strong&gt;UITabbarViewController&lt;/strong&gt;,比如在它的&lt;strong&gt;selectedViewController&lt;/strong&gt;控制器A上,模态一个视图控制器B,那么A的&lt;strong&gt;presentedViewController&lt;/strong&gt;指向B是没有错的,但B的&lt;strong&gt;presentingViewController&lt;/strong&gt;指向的不是A,而是&lt;strong&gt;UITabbarViewController&lt;/strong&gt;。因此这里的方法大概是这样子的:&lt;/p&gt;
+
+&lt;p&gt;UITabBarController &lt;em&gt;tabbarViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+UIViewController   *selectViewController = root.selectedViewController;
+[tabbarViewController dismissViewControllerAnimated:YES completion:^{
+       dispatch_async(dispatch_get_main_queue(), ^{
+           [(UINavigationController&lt;/em&gt;)selectViewController popToRootViewControllerAnimated:NO];
+           usleep(5000);
+           [selectViewController presentViewController:[SZLAssemblingFactory YSNavigationwithLoginViewController] 
+           									      animated:YES 
+           									    completion:nil];
+       });
+}];&lt;/p&gt;
 
 </description>
         <pubDate>Wed, 26 Aug 2015 17:43:00 +0800</pubDate>
