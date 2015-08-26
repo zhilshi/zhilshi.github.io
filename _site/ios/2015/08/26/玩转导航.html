@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>    
+  <head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width initial-scale=1">
+
+  <title>视图控制器跳转</title>
+  <meta name="description" content="最近在项目中，遇到导航跳转相关的各种复杂逻辑。下面介绍一些个人在开发中的一些思路，希望有所帮助。">
+
+  <link rel="stylesheet" href="/css/main.css">
+  <link rel="canonical" href="http://yourdomain.com/ios/2015/08/26/%E7%8E%A9%E8%BD%AC%E5%AF%BC%E8%88%AA.html">
+  <link rel="alternate" type="application/atom+xml" title="Run Boy!" href="http://yourdomain.com/feed.xml" />
+  <script src="/scripts/jquery-1.11.2.min.js"></script>
+  <script src="/scripts/pithy.js"></script>
+</head>
+
+  <link rel="stylesheet" href="/pygments.css">
+  <body>
+    <header class="header">
+	<div class="header-container">
+		<div class="nav">
+			
+				<li>
+					<a href="/index.html">home</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/archive.html">archive</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/category.html">category</a>
+				</li>			
+			
+			
+				<li>
+					<a href="/about.html">about</a>
+				</li>			
+			
+		</div>
+		<div class="description"> 学无止境 </div>		
+		<ul class="social-links">
+			<li>
+				<a href="https://github.com/zhilshi" title="Github">
+					<img width="19px" height="19px" src="/images/github.png"/>
+				</a>
+			</li>
+			<li>
+				<a href="/feed.xml" title="RSS">
+					<img width="19px" height="19px" src="/images/rss.png"/>
+				</a>
+			</li>
+			<li>
+				<a href="https://twitter.com/shizhilong1" title="Twitter">
+					<img width="19px" height="19px" src="/images/twitter.png"/>
+				</a>
+			</li>
+		</ul>		
+	</div>
+</header>
+
+    <br>
+    <div class="page-content">
+      <div class="wrapper">
+        <div class="post">
+  <br>
+  <header class="post-header">
+    <h1 class="post-title">视图控制器跳转</h1>
+    <p class="post-meta">Aug 26, 2015</p>
+  </header>
+
+  <article class="post-content">
+    <p>最近在项目中，遇到导航跳转相关的各种复杂逻辑。下面介绍一些个人在开发中的一些思路，希望有所帮助。</p>
+
+<h3 id="section">获取当前的视图控制器</h3>
+<p>大多时候，我们需要知道当前的视图控制器是啥。通常在点击推送消息跳转、session异常退出登录等情况下，需要知道当前在哪一个视图控制器上，才可以进行线框跳转。那么，如何获取呢？第一反应，这不是很简单？直接从rootViewController找起来，找到topViewController.
+比如:</p>
+
+<div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="lineno"> 1</span> <span class="p">+</span> <span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nf">currentTopViewController</span>
+<span class="lineno"> 2</span> <span class="p">{</span>
+<span class="lineno"> 3</span>     <span class="c1">//获取根视图控制器</span>
+<span class="lineno"> 4</span>     <span class="bp">UIViewController</span> <span class="o">*</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIApplication</span> <span class="n">sharedApplication</span><span class="p">].</span><span class="n">keyWindow</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">;</span>
+<span class="lineno"> 5</span>     <span class="c1">//tabbar</span>
+<span class="lineno"> 6</span>     <span class="k">if</span> <span class="p">([</span><span class="n">rootViewController</span> <span class="nl">isKindOfClass</span><span class="p">:[</span><span class="bp">UITabBarController</span> <span class="k">class</span><span class="p">]])</span>
+<span class="lineno"> 7</span>     <span class="p">{</span>
+<span class="lineno"> 8</span>         <span class="bp">UINavigationController</span> <span class="o">*</span><span class="n">nav</span> <span class="o">=</span>  <span class="p">(</span><span class="bp">UINavigationController</span> <span class="o">*</span><span class="p">)[(</span><span class="bp">UITabBarController</span> <span class="o">*</span><span class="p">)</span><span class="n">rootViewController</span> <span class="n">selectedViewController</span><span class="p">];</span>        
+<span class="lineno"> 9</span>         <span class="k">return</span> <span class="n">nav</span><span class="p">.</span><span class="n">topViewController</span><span class="p">;</span>
+<span class="lineno">10</span>     <span class="p">}</span>
+<span class="lineno">11</span>     <span class="c1">//导航条</span>
+<span class="lineno">12</span>     <span class="k">if</span> <span class="p">([</span><span class="n">rootViewController</span> <span class="nl">isKindOfClass</span><span class="p">:[</span><span class="bp">UINavigationController</span> <span class="k">class</span><span class="p">]])</span>
+<span class="lineno">13</span>     <span class="p">{</span>
+<span class="lineno">14</span>         <span class="k">return</span> <span class="p">((</span><span class="bp">UINavigationController</span> <span class="o">*</span><span class="p">)</span><span class="n">rootViewController</span><span class="p">).</span><span class="n">topViewController</span><span class="p">;</span>
+<span class="lineno">15</span>     <span class="p">}</span>
+<span class="lineno">16</span>     <span class="c1">//视图控制器</span>
+<span class="lineno">17</span>     <span class="k">return</span> <span class="n">rootViewController</span><span class="p">;</span>
+<span class="lineno">18</span> <span class="p">}</span></code></pre></div>
+
+<p><strong>等等,考虑这么简单？模态呢？</strong>,我们知道，可以连续有多个模态的导航控制器,因此大概是这样子的。</p>
+
+<div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="lineno"> 1</span> <span class="c1">//方法一 通过rootViewController 找</span>
+<span class="lineno"> 2</span> <span class="p">+</span> <span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nf">szl_currentTopViewController</span>
+<span class="lineno"> 3</span> <span class="p">{</span>
+<span class="lineno"> 4</span>     <span class="c1">//获取根视图控制器</span>
+<span class="lineno"> 5</span>     <span class="bp">UIViewController</span> <span class="o">*</span><span class="n">rootViewController</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIApplication</span> <span class="n">sharedApplication</span><span class="p">].</span><span class="n">keyWindow</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">;</span>
+<span class="lineno"> 6</span>     
+<span class="lineno"> 7</span>     <span class="c1">//tabbar</span>
+<span class="lineno"> 8</span>     <span class="k">if</span> <span class="p">([</span><span class="n">rootViewController</span> <span class="nl">isKindOfClass</span><span class="p">:[</span><span class="bp">UITabBarController</span> <span class="k">class</span><span class="p">]])</span>
+<span class="lineno"> 9</span>     <span class="p">{</span>
+<span class="lineno">10</span>         <span class="bp">UINavigationController</span> <span class="o">*</span><span class="n">selectNavController</span> <span class="o">=</span>  <span class="p">(</span><span class="bp">UINavigationController</span> <span class="o">*</span><span class="p">)[(</span><span class="bp">UITabBarController</span> <span class="o">*</span><span class="p">)</span><span class="n">rootViewController</span> <span class="n">selectedViewController</span><span class="p">];</span>
+<span class="lineno">11</span>         <span class="k">return</span> <span class="p">[[</span><span class="nb">self</span> <span class="k">class</span><span class="p">]</span> <span class="nl">szl_findCurrentTopViewControllerFromViewController</span><span class="p">:</span><span class="n">selectNavController</span><span class="p">];</span>
+<span class="lineno">12</span>     <span class="p">}</span>
+<span class="lineno">13</span>     
+<span class="lineno">14</span>     <span class="k">return</span> <span class="p">[[</span><span class="nb">self</span> <span class="k">class</span><span class="p">]</span> <span class="nl">szl_findCurrentTopViewControllerFromViewController</span><span class="p">:</span><span class="n">rootViewController</span><span class="p">];</span>
+<span class="lineno">15</span> <span class="p">}</span>
+<span class="lineno">16</span> 
+<span class="lineno">17</span> <span class="c1">// 开始查找</span>
+<span class="lineno">18</span> <span class="p">+</span> <span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nf">szl_findCurrentTopViewControllerFromViewController:</span><span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span>
+<span class="lineno">19</span> <span class="p">{</span>
+<span class="lineno">20</span>     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">viewController</span><span class="p">)</span>
+<span class="lineno">21</span>     <span class="p">{</span>
+<span class="lineno">22</span>         <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+<span class="lineno">23</span>     <span class="p">}</span>
+<span class="lineno">24</span>     <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;start find from : %@&quot;</span><span class="p">,</span><span class="n">viewController</span><span class="p">);</span>
+<span class="lineno">25</span>     <span class="c1">// 查找模态</span>
+<span class="lineno">26</span>     <span class="bp">UIViewController</span> <span class="o">*</span><span class="n">topPresentedViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">self</span> <span class="k">class</span><span class="p">]</span> <span class="nl">szl_topPresentedViewControllerFromViewController</span><span class="p">:</span><span class="n">viewController</span><span class="p">];</span>
+<span class="lineno">27</span>     
+<span class="lineno">28</span>     <span class="c1">// 查找最前视图</span>
+<span class="lineno">29</span>     <span class="bp">UIViewController</span> <span class="o">*</span><span class="n">currentTopViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">self</span> <span class="k">class</span><span class="p">]</span> <span class="nl">szl_topViewControllerFromViewController</span><span class="p">:</span><span class="n">topPresentedViewController</span><span class="p">];</span>
+<span class="lineno">30</span>     
+<span class="lineno">31</span>     <span class="k">return</span> <span class="n">currentTopViewController</span><span class="p">;</span>
+<span class="lineno">32</span> <span class="p">}</span>
+<span class="lineno">33</span> 
+<span class="lineno">34</span> <span class="c1">// 从fromViewController开始查找,一直找到最后的模态视图；</span>
+<span class="lineno">35</span> <span class="c1">// 如果无模态视图，返回fromViewController</span>
+<span class="lineno">36</span> <span class="p">+</span> <span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nf">szl_topPresentedViewControllerFromViewController:</span><span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">fromViewController</span>
+<span class="lineno">37</span> <span class="p">{</span>
+<span class="lineno">38</span>     <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;presented viewController : %@&quot;</span><span class="p">,</span><span class="n">fromViewController</span><span class="p">);</span>
+<span class="lineno">39</span> 
+<span class="lineno">40</span>     <span class="c1">// 判断是否存在模态视图, 不存在,返回自身</span>
+<span class="lineno">41</span>     <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">fromViewController</span><span class="p">.</span><span class="n">presentedViewController</span><span class="p">)</span>
+<span class="lineno">42</span>     <span class="p">{</span>
+<span class="lineno">43</span>         <span class="k">return</span> <span class="n">fromViewController</span><span class="p">;</span>
+<span class="lineno">44</span>     <span class="p">}</span>
+<span class="lineno">45</span>     
+<span class="lineno">46</span>     <span class="c1">// 递归查找</span>
+<span class="lineno">47</span>     <span class="k">return</span> <span class="p">[[</span><span class="nb">self</span> <span class="k">class</span><span class="p">]</span> <span class="nl">szl_topPresentedViewControllerFromViewController</span><span class="p">:</span><span class="n">fromViewController</span><span class="p">.</span><span class="n">presentedViewController</span><span class="p">];</span>
+<span class="lineno">48</span> <span class="p">}</span>
+<span class="lineno">49</span> 
+<span class="lineno">50</span> <span class="c1">//从fromViewController获取最前面的视图控制器</span>
+<span class="lineno">51</span> <span class="p">+</span> <span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nf">szl_topViewControllerFromViewController:</span><span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">fromViewController</span>
+<span class="lineno">52</span> <span class="p">{</span>
+<span class="lineno">53</span>     <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;fromViewController: %@&quot;</span><span class="p">,</span><span class="n">fromViewController</span><span class="p">);</span>
+<span class="lineno">54</span> 
+<span class="lineno">55</span>     <span class="c1">//当前模态视图是一个导航控制器</span>
+<span class="lineno">56</span>     <span class="k">if</span> <span class="p">([</span><span class="n">fromViewController</span> <span class="nl">isKindOfClass</span><span class="p">:[</span><span class="bp">UINavigationController</span> <span class="k">class</span><span class="p">]])</span>
+<span class="lineno">57</span>     <span class="p">{</span>
+<span class="lineno">58</span>         <span class="k">return</span> <span class="p">((</span><span class="bp">UINavigationController</span> <span class="o">*</span><span class="p">)</span><span class="n">fromViewController</span><span class="p">).</span><span class="n">topViewController</span><span class="p">;</span>
+<span class="lineno">59</span>     <span class="p">}</span>
+<span class="lineno">60</span>     
+<span class="lineno">61</span>     <span class="c1">//视图控制器</span>
+<span class="lineno">62</span>     <span class="k">return</span> <span class="n">fromViewController</span><span class="p">;</span>
+<span class="lineno">63</span> <span class="p">}</span></code></pre></div>
+
+<p>这里的思路其实很简单，从根视图控制器开始查找,根视图控制器存在两种情况:</p>
+
+<ol>
+  <li>根视图控制器是<strong>UITabBarController</strong></li>
+  <li>根视图控制器是<strong>UINavigationController</strong> 或 <strong>UIViewController</strong></li>
+</ol>
+
+<p>我们针对<strong>UITabBarController</strong>进行处理,通过<strong>selectedViewController</strong>获取当前的视图控制器。</p>
+
+<p>其次,根据这时获取的视图控制器,可能是一个导航视图控制器(基本上是导航控制器),但也有可能是视图控制器。通过<strong>szl_topPresentedViewControllerFromViewController</strong>方法寻找最顶层的模态视图控制器。可以看到这是一个递归方法,天知道复杂的应用里会有多少层模态呢？这里注意,如果一开始就不存在模态,还是会返回出传入的对象。</p>
+
+<p>最后,根据获取到的视图控制器,有可能是一个导航视图控制器,也有可能是一个视图控制器,因此通过方法<strong>szl_topViewControllerFromViewController</strong>获取最终的当前视图控制器。</p>
+
+<p>需要注意的是,由于<strong>presentedViewController</strong>取值操作,因此获取方法需要在视图控制器<strong>viewWillAppear</strong>之后调用.
+回头一看，看上去是没什么问题了?基本上确实是可以实现功能。</p>
+
+<p>但是,我们看到整个方法的实现,最主要的还是基于视图控制器<strong>presentedViewController</strong>的属性。</p>
+
+<p>那么该属性是在什么时候赋值的呢?我们基本可以断定属性赋值的时机肯定会影响到我们对当前视图控制器的判断。
+我们先来看看模态方法<strong>presentViewController:animated:completion:</strong>的<strong>appleAPI</strong>说明:</p>
+
+<div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="n">Presents</span> <span class="n">a</span> <span class="n">view</span> <span class="n">controller</span> <span class="n">modally</span><span class="p">.</span>
+<span class="n">In</span> <span class="n">a</span> <span class="n">horizontally</span> <span class="n">compact</span> <span class="n">environment</span><span class="p">,</span> <span class="n">the</span> <span class="n">presented</span> <span class="n">view</span> <span class="n">is</span> <span class="n">always</span> <span class="n">full</span> <span class="n">screen</span><span class="p">.</span> <span class="n">In</span> <span class="n">a</span> <span class="n">horizontally</span> <span class="n">regular</span> <span class="n">environment</span><span class="p">,</span> <span class="n">the</span> <span class="n">presentation</span> <span class="n">depends</span> <span class="n">on</span> <span class="n">the</span> <span class="n">value</span> <span class="k">in</span> <span class="n">the</span> <span class="n">modalPresentationStyle</span> <span class="n">property</span><span class="p">.</span>
+<span class="o">**</span><span class="n">This</span> <span class="n">method</span> <span class="n">sets</span> <span class="n">the</span> <span class="n">presentedViewController</span> <span class="n">property</span> <span class="n">to</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">view</span> <span class="n">controller</span><span class="p">,</span> <span class="n">resizes</span> <span class="n">that</span> <span class="n">view</span> <span class="n">controller</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">view</span> <span class="n">based</span> <span class="n">on</span> <span class="n">the</span> <span class="n">presentation</span> <span class="n">style</span> <span class="n">and</span> <span class="n">then</span> <span class="n">adds</span> <span class="n">the</span> <span class="n">view</span> <span class="n">to</span> <span class="n">the</span> <span class="n">view</span> <span class="n">hierarchy</span><span class="o">**</span><span class="p">.</span> <span class="n">The</span> <span class="n">view</span> <span class="n">is</span> <span class="n">animated</span> <span class="n">onscreen</span> <span class="n">according</span> <span class="n">to</span> <span class="n">the</span> <span class="n">transition</span> <span class="n">style</span> <span class="n">specified</span> <span class="k">in</span> <span class="n">the</span> <span class="n">modalTransitionStyle</span> <span class="n">property</span> <span class="n">of</span> <span class="n">the</span> <span class="n">presented</span> <span class="n">view</span> <span class="n">controller</span><span class="p">.</span>
+<span class="o">**</span><span class="n">The</span> <span class="n">completion</span> <span class="n">handler</span> <span class="n">is</span> <span class="n">called</span> <span class="n">after</span> <span class="n">the</span> <span class="nl">viewDidAppear</span><span class="p">:</span> <span class="n">method</span> <span class="n">is</span> <span class="n">called</span> <span class="n">on</span> <span class="n">the</span> <span class="n">presented</span> <span class="n">view</span> <span class="n">controller</span><span class="p">.</span><span class="o">**</span></code></pre></div>
+
+<p><strong>presentedViewController</strong>属性是在该方法中设置的,并且是在<strong>viewDidAppear</strong>之后完成的。经过测试就发现,只有在<strong>viewDidLoad</strong>完成之后,才会对指定的视图控制器设置该属性。因此调用的时候需要注意。</p>
+
+<p>此外,同样的,如果该视图正在调用<strong>dismissViewControllerAnimated:completion</strong>方法呢？其实我们可以看下下面的几个API:</p>
+
+<div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isBeingPresented</span> <span class="n">NS_AVAILABLE_IOS</span><span class="p">(</span><span class="mi">5</span><span class="n">_0</span><span class="p">);</span>
+<span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isBeingDismissed</span> <span class="n">NS_AVAILABLE_IOS</span><span class="p">(</span><span class="mi">5</span><span class="n">_0</span><span class="p">);</span>
+<span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isMovingToParentViewController</span> <span class="n">NS_AVAILABLE_IOS</span><span class="p">(</span><span class="mi">5</span><span class="n">_0</span><span class="p">);</span>
+<span class="p">-</span> <span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">isMovingFromParentViewController</span> <span class="n">NS_AVAILABLE_IOS</span><span class="p">(</span><span class="mi">5</span><span class="n">_0</span><span class="p">);</span></code></pre></div>
+
+<table>
+  <tbody>
+    <tr>
+      <td>对于视图的模态状态,显而易见,这几个方法是中间过渡的状态表示。比如我们可以通过判断**([self isBeingDismissed]</td>
+      <td> </td>
+      <td>[self isMovingFromParentViewController])**表达式,来确定视图是将会被dismiss掉。</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>因此,我们可以修改下<strong>szl_findCurrentTopViewControllerFromViewController:</strong>方法,如下</p>
+
+<div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="p">+</span> <span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nf">szl_findCurrentTopViewControllerFromViewController:</span><span class="p">(</span><span class="bp">UIViewController</span> <span class="o">*</span><span class="p">)</span><span class="nv">viewController</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">viewController</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="k">return</span> <span class="nb">nil</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;start find from : %@&quot;</span><span class="p">,</span><span class="n">viewController</span><span class="p">);</span>
+    <span class="c1">// 查找模态</span>
+    <span class="bp">UIViewController</span> <span class="o">*</span><span class="n">topPresentedViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">self</span> <span class="k">class</span><span class="p">]</span> <span class="nl">szl_topPresentedViewControllerFromViewController</span><span class="p">:</span><span class="n">viewController</span><span class="p">];</span>
+    
+    <span class="c1">// 查找最前视图</span>
+    <span class="bp">UIViewController</span> <span class="o">*</span><span class="n">currentTopViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">self</span> <span class="k">class</span><span class="p">]</span> <span class="nl">szl_topViewControllerFromViewController</span><span class="p">:</span><span class="n">topPresentedViewController</span><span class="p">];</span>
+    
+	<span class="c1">// 当前页面正在移除的情况下 即将消失</span>
+	<span class="k">if</span> <span class="p">([</span><span class="n">currentTopViewController</span> <span class="n">isBeingDismissed</span><span class="p">]</span> <span class="o">||</span> <span class="p">[</span><span class="n">currentTopViewController</span> <span class="n">isMovingFromParentViewController</span><span class="p">])</span>
+	<span class="p">{</span>
+		<span class="bp">UIViewController</span> <span class="o">*</span><span class="n">presetingViewController</span> <span class="o">=</span> <span class="n">presentedVC</span><span class="p">.</span><span class="n">presentingViewController</span><span class="p">;</span>
+		<span class="k">if</span> <span class="p">([</span><span class="n">presetingViewController</span> <span class="nl">isKindOfClass</span><span class="p">:[</span><span class="bp">UINavigationController</span> <span class="k">class</span><span class="p">]])</span>
+		<span class="p">{</span>
+			 <span class="k">return</span> <span class="p">((</span><span class="bp">UINavigationController</span> <span class="o">*</span><span class="p">)</span><span class="n">presetingViewController</span><span class="p">).</span><span class="n">topViewController</span><span class="p">;</span>
+		<span class="p">}</span>
+		<span class="k">else</span>
+		<span class="p">{</span>
+			 <span class="k">return</span> <span class="n">presetingViewController</span><span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+    <span class="k">return</span> <span class="n">currentTopViewController</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+
+<p>你看,简单的获取当前最前页,写了这么多的代码,但我们依然不能完全肯定没有遗落之处。比如session异常的通知,很有可能在任何状态下发生!那么,有没有更好的方式？</p>
+
+<p>然后,我想到了运行时。不管视图中间状态如何,一个视图控制器被添加到当前窗口上,会调用<strong>viewWillAppear</strong>和<strong>viewDidAppear</strong>,</p>
+
+<p>待续
+###跳转</p>
+
+
+  </article>
+</div>
+
+      </div>
+    </div>
+    
+    <footer class="footer">
+  <div id="gotop">^</div>
+  <br>
+	@2015 Run,boy! by zhilshi.
+</footer>
+
+    
+  </body>
+
+</html>

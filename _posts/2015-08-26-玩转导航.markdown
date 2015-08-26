@@ -1,0 +1,175 @@
+---
+layout: post
+title:  "视图控制器跳转"
+date:   2015-08-26 09:43:00
+categories: iOS
+---
+
+最近在项目中，遇到导航跳转相关的各种复杂逻辑。下面介绍一些个人在开发中的一些思路，希望有所帮助。
+
+###获取当前的视图控制器
+大多时候，我们需要知道当前的视图控制器是啥。通常在点击推送消息跳转、session异常退出登录等情况下，需要知道当前在哪一个视图控制器上，才可以进行线框跳转。那么，如何获取呢？第一反应，这不是很简单？直接从rootViewController找起来，找到topViewController.
+比如:
+{% highlight objective-c linenos %}
++ (UIViewController *)currentTopViewController
+{
+    //获取根视图控制器
+    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    //tabbar
+    if ([rootViewController isKindOfClass:[UITabBarController class]])
+    {
+        UINavigationController *nav =  (UINavigationController *)[(UITabBarController *)rootViewController selectedViewController];        
+        return nav.topViewController;
+    }
+    //导航条
+    if ([rootViewController isKindOfClass:[UINavigationController class]])
+    {
+        return ((UINavigationController *)rootViewController).topViewController;
+    }
+    //视图控制器
+    return rootViewController;
+}
+{% endhighlight %}	
+**等等,考虑这么简单？模态呢？**,我们知道，可以连续有多个模态的导航控制器,因此大概是这样子的。
+{% highlight objective-c linenos %}
+//方法一 通过rootViewController 找
++ (UIViewController *)szl_currentTopViewController
+{
+    //获取根视图控制器
+    UIViewController *rootViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
+    
+    //tabbar
+    if ([rootViewController isKindOfClass:[UITabBarController class]])
+    {
+        UINavigationController *selectNavController =  (UINavigationController *)[(UITabBarController *)rootViewController selectedViewController];
+        return [[self class] szl_findCurrentTopViewControllerFromViewController:selectNavController];
+    }
+    
+    return [[self class] szl_findCurrentTopViewControllerFromViewController:rootViewController];
+}
+
+// 开始查找
++ (UIViewController *)szl_findCurrentTopViewControllerFromViewController:(UIViewController *)viewController
+{
+    if (!viewController)
+    {
+        return nil;
+    }
+    NSLog(@"start find from : %@",viewController);
+    // 查找模态
+    UIViewController *topPresentedViewController = [[self class] szl_topPresentedViewControllerFromViewController:viewController];
+    
+    // 查找最前视图
+    UIViewController *currentTopViewController = [[self class] szl_topViewControllerFromViewController:topPresentedViewController];
+    
+    return currentTopViewController;
+}
+
+// 从fromViewController开始查找,一直找到最后的模态视图；
+// 如果无模态视图，返回fromViewController
++ (UIViewController *)szl_topPresentedViewControllerFromViewController:(UIViewController *)fromViewController
+{
+    NSLog(@"presented viewController : %@",fromViewController);
+
+    // 判断是否存在模态视图, 不存在,返回自身
+    if (!fromViewController.presentedViewController)
+    {
+        return fromViewController;
+    }
+    
+    // 递归查找
+    return [[self class] szl_topPresentedViewControllerFromViewController:fromViewController.presentedViewController];
+}
+
+//从fromViewController获取最前面的视图控制器
++ (UIViewController *)szl_topViewControllerFromViewController:(UIViewController *)fromViewController
+{
+    NSLog(@"fromViewController: %@",fromViewController);
+
+    //当前模态视图是一个导航控制器
+    if ([fromViewController isKindOfClass:[UINavigationController class]])
+    {
+        return ((UINavigationController *)fromViewController).topViewController;
+    }
+    
+    //视图控制器
+    return fromViewController;
+}
+{% endhighlight %}	
+这里的思路其实很简单，从根视图控制器开始查找,根视图控制器存在两种情况:
+
+1. 根视图控制器是**UITabBarController**
+2. 根视图控制器是**UINavigationController** 或 **UIViewController**
+
+我们针对**UITabBarController**进行处理,通过**selectedViewController**获取当前的视图控制器。
+
+其次,根据这时获取的视图控制器,可能是一个导航视图控制器(基本上是导航控制器),但也有可能是视图控制器。通过**szl_topPresentedViewControllerFromViewController**方法寻找最顶层的模态视图控制器。可以看到这是一个递归方法,天知道复杂的应用里会有多少层模态呢？这里注意,如果一开始就不存在模态,还是会返回出传入的对象。
+
+最后,根据获取到的视图控制器,有可能是一个导航视图控制器,也有可能是一个视图控制器,因此通过方法**szl_topViewControllerFromViewController**获取最终的当前视图控制器。
+
+需要注意的是,由于**presentedViewController**取值操作,因此获取方法需要在视图控制器**viewWillAppear**之后调用.
+回头一看，看上去是没什么问题了?基本上确实是可以实现功能。
+
+但是,我们看到整个方法的实现,最主要的还是基于视图控制器**presentedViewController**的属性。
+
+那么该属性是在什么时候赋值的呢?我们基本可以断定属性赋值的时机肯定会影响到我们对当前视图控制器的判断。
+我们先来看看模态方法**presentViewController:animated:completion:**的**appleAPI**说明:
+
+
+{% highlight objective-c %}
+Presents a view controller modally.
+In a horizontally compact environment, the presented view is always full screen. In a horizontally regular environment, the presentation depends on the value in the modalPresentationStyle property.
+**This method sets the presentedViewController property to the specified view controller, resizes that view controller's view based on the presentation style and then adds the view to the view hierarchy**. The view is animated onscreen according to the transition style specified in the modalTransitionStyle property of the presented view controller.
+**The completion handler is called after the viewDidAppear: method is called on the presented view controller.**
+{% endhighlight %}	
+
+**presentedViewController**属性是在该方法中设置的,并且是在**viewDidAppear**之后完成的。经过测试就发现,只有在**viewDidLoad**完成之后,才会对指定的视图控制器设置该属性。因此调用的时候需要注意。
+
+此外,同样的,如果该视图正在调用**dismissViewControllerAnimated:completion**方法呢？其实我们可以看下下面的几个API:
+{% highlight objective-c %}
+- (BOOL)isBeingPresented NS_AVAILABLE_IOS(5_0);
+- (BOOL)isBeingDismissed NS_AVAILABLE_IOS(5_0);
+- (BOOL)isMovingToParentViewController NS_AVAILABLE_IOS(5_0);
+- (BOOL)isMovingFromParentViewController NS_AVAILABLE_IOS(5_0);
+{% endhighlight %}	
+
+对于视图的模态状态,显而易见,这几个方法是中间过渡的状态表示。比如我们可以通过判断**([self isBeingDismissed] || [self isMovingFromParentViewController])**表达式,来确定视图是将会被dismiss掉。
+
+因此,我们可以修改下**szl_findCurrentTopViewControllerFromViewController:**方法,如下
+{% highlight objective-c %}
++ (UIViewController *)szl_findCurrentTopViewControllerFromViewController:(UIViewController *)viewController
+{
+    if (!viewController)
+    {
+        return nil;
+    }
+    NSLog(@"start find from : %@",viewController);
+    // 查找模态
+    UIViewController *topPresentedViewController = [[self class] szl_topPresentedViewControllerFromViewController:viewController];
+    
+    // 查找最前视图
+    UIViewController *currentTopViewController = [[self class] szl_topViewControllerFromViewController:topPresentedViewController];
+    
+	// 当前页面正在移除的情况下 即将消失
+	if ([currentTopViewController isBeingDismissed] || [currentTopViewController isMovingFromParentViewController])
+	{
+		UIViewController *presetingViewController = presentedVC.presentingViewController;
+		if ([presetingViewController isKindOfClass:[UINavigationController class]])
+		{
+			 return ((UINavigationController *)presetingViewController).topViewController;
+		}
+		else
+		{
+			 return presetingViewController;
+		}
+	}
+    return currentTopViewController;
+}
+{% endhighlight %}	
+你看,简单的获取当前最前页,写了这么多的代码,但我们依然不能完全肯定没有遗落之处。比如session异常的通知,很有可能在任何状态下发生!那么,有没有更好的方式？
+
+然后,我想到了运行时。不管视图中间状态如何,一个视图控制器被添加到当前窗口上,会调用**viewWillAppear**和**viewDidAppear**,
+
+待续
+###跳转
+
