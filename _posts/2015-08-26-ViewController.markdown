@@ -115,15 +115,15 @@ categories: iOS
 那么该属性是在什么时候赋值的呢?我们基本可以断定属性赋值的时机肯定会影响到我们对当前视图控制器的判断。
 我们先来看看模态方法**presentViewController:animated:completion:**的**appleAPI**说明:
 
-
-{% highlight objective-c %}
-Presents a view controller modally.
+`Presents a view controller modally.
 In a horizontally compact environment, the presented view is always full screen. In a horizontally regular environment, the presentation depends on the value in the modalPresentationStyle property.
 **This method sets the presentedViewController property to the specified view controller, resizes that view controller's view based on the presentation style and then adds the view to the view hierarchy**. The view is animated onscreen according to the transition style specified in the modalTransitionStyle property of the presented view controller.
 **The completion handler is called after the viewDidAppear: method is called on the presented view controller.**
-{% endhighlight %}	
+`
 
-**presentedViewController**属性是在该方法中设置的,并且是在**viewDidAppear**之后完成的。经过测试就发现,只有在**viewDidLoad**完成之后,才会对指定的视图控制器设置该属性。因此调用的时候需要注意。
+**presentedViewController**属性是在该方法中设置的,并且是在**viewDidAppear**之后完成的。经过测试就发现,只有在**viewDidLoad**完成之后,模态视图完成加载后,才会对指定的视图控制器设置该属性。
+
+因此调用的时候需要注意该情况:**如果在新的视图模态加载未完成前,获取当前的视图控制器可能就会存在问题**
 
 此外,同样的,如果该视图正在调用**dismissViewControllerAnimated:completion**方法呢？其实我们可以看下下面的几个API:
 {% highlight objective-c %}
@@ -147,10 +147,8 @@ In a horizontally compact environment, the presented view is always full screen.
     NSLog(@"start find from : %@",viewController);
     // 查找模态
     UIViewController *topPresentedViewController = [[self class] szl_topPresentedViewControllerFromViewController:viewController];
-    
     // 查找最前视图
     UIViewController *currentTopViewController = [[self class] szl_topViewControllerFromViewController:topPresentedViewController];
-    
 	// 当前页面正在移除的情况下 即将消失
 	if ([currentTopViewController isBeingDismissed] || [currentTopViewController isMovingFromParentViewController])
 	{
@@ -167,14 +165,15 @@ In a horizontally compact environment, the presented view is always full screen.
     return currentTopViewController;
 }
 {% endhighlight %}	
+
 你看,简单的获取当前最前页,写了这么多的代码,但我们依然不能完全肯定没有遗落之处。比如session异常的通知,很有可能在任何状态下发生!那么,有没有更好的方式？
 
-其实视图的跳转,都是在主线程上一个视图控制器被添加到当前窗口上,当前的视图,会调用**viewWillAppear**和**viewDidAppear**,那为何不直接用一静态全局变量指定当前的视图控制器?为了避免每个类中进行调用,可以考虑使用**Method Swizzling**来获取当前的视图控制器.其次再根据模态情况下进行处理。这样避免了方法一种繁琐的递归查找,效率更高。
+其实视图的跳转,都是在主线程上一个视图控制器被添加到当前窗口上,当前的视图,会调用**viewWillAppear**和**viewDidAppear**,那可以直接用一全局变量指定当前的视图控制器?为了避免每个类中进行调用,可以考虑使用**Method Swizzling**来获取当前的视图控制器.其次再根据模态情况下进行处理。这样避免了方法一种繁琐的递归查找,效率更高。
 {% highlight objective-c %}
-
 - (void)szl_viewDidAppear:(BOOL)animated
 {
     NSString *classname = NSStringFromClass([self class]);
+    // 需要过滤 筛选
     if ([classname hasPrefix:@"SZL"])
     {
         curViewController = self;
@@ -199,7 +198,7 @@ In a horizontally compact environment, the presented view is always full screen.
     }
 }
 {% endhighlight %}	
-该load实现参考stackoverflow上的实现。在交互方法中,增加了一步前缀判断。此外,对于特殊的系统视图控制器比如相册、拍照等也需要考虑进来。获取到后,再根据方法一的后续判断进行处理。
+该load实现参考stackoverflow上的实现。在交互方法中,增加了一步前缀判断。此外,对于特殊的系统视图控制器比如相册、拍照等也需要考虑进来。当然,获取到后,还是需要再根据方法一的后续判断进行处理,这就不同的业务规则了。
 
 ###跳转
 关于跳转,很多时候我们需要处理复杂的页面跳转。比如session异常的情况,业务设计需要不管在任何页面,你需要先回到UITabbarViewConroller的当前页,再模态一个登录视图控制器提示用户进行登录操作。该怎么设计呢??基本上思路是这样子的:
@@ -216,16 +215,19 @@ In a horizontally compact environment, the presented view is always full screen.
 	
 意识是说当存在多个模态的视图控制器构成的堆栈里,只要在这个堆栈里找到低层级的模态视图调用**dismiss**,在它之上的缘由视图控制器都会移除。
 这里需要注意的是,如果使用**UITabbarViewController**,比如在它的**selectedViewController**控制器A上,模态一个视图控制器B,那么A的**presentedViewController**指向B是没有错的,但B的**presentingViewController**指向的不是A,而是**UITabbarViewController**。因此这里的方法大概是这样子的:
+{% highlight objective-c %}
 
 UITabBarController *tabbarViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
 UIViewController   *selectViewController = root.selectedViewController;
 [tabbarViewController dismissViewControllerAnimated:YES completion:^{
        dispatch_async(dispatch_get_main_queue(), ^{
-           [(UINavigationController*)selectViewController popToRootViewControllerAnimated:NO];
-           usleep(5000);
-           [selectViewController presentViewController:[SZLAssemblingFactory YSNavigationwithLoginViewController] 
+           [(UINavigationController*)selectViewController popToRootViewControllerAnimated:^(){
+            [selectViewController presentViewController:[SZLAssemblingFactory YSNavigationwithLoginViewController] 
            									      animated:YES 
            									    completion:nil];
+           }];          
        });
 }];
+
+{% endhighlight %}
 

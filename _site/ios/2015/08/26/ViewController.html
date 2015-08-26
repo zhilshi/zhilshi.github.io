@@ -9,7 +9,7 @@
   <meta name="description" content="最近在项目中，遇到导航跳转相关的各种复杂逻辑。下面介绍一些个人在开发中的一些思路，希望有所帮助。">
 
   <link rel="stylesheet" href="/css/main.css">
-  <link rel="canonical" href="http://yourdomain.com/ios/2015/08/26/%E7%8E%A9%E8%BD%AC%E5%AF%BC%E8%88%AA.html">
+  <link rel="canonical" href="http://yourdomain.com/ios/2015/08/26/ViewController.html">
   <link rel="alternate" type="application/atom+xml" title="Run Boy!" href="http://yourdomain.com/feed.xml" />
   <script src="/scripts/jquery-1.11.2.min.js"></script>
   <script src="/scripts/pithy.js"></script>
@@ -185,12 +185,15 @@
 <p>那么该属性是在什么时候赋值的呢?我们基本可以断定属性赋值的时机肯定会影响到我们对当前视图控制器的判断。
 我们先来看看模态方法<strong>presentViewController:animated:completion:</strong>的<strong>appleAPI</strong>说明:</p>
 
-<div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="n">Presents</span> <span class="n">a</span> <span class="n">view</span> <span class="n">controller</span> <span class="n">modally</span><span class="p">.</span>
-<span class="n">In</span> <span class="n">a</span> <span class="n">horizontally</span> <span class="n">compact</span> <span class="n">environment</span><span class="p">,</span> <span class="n">the</span> <span class="n">presented</span> <span class="n">view</span> <span class="n">is</span> <span class="n">always</span> <span class="n">full</span> <span class="n">screen</span><span class="p">.</span> <span class="n">In</span> <span class="n">a</span> <span class="n">horizontally</span> <span class="n">regular</span> <span class="n">environment</span><span class="p">,</span> <span class="n">the</span> <span class="n">presentation</span> <span class="n">depends</span> <span class="n">on</span> <span class="n">the</span> <span class="n">value</span> <span class="k">in</span> <span class="n">the</span> <span class="n">modalPresentationStyle</span> <span class="n">property</span><span class="p">.</span>
-<span class="o">**</span><span class="n">This</span> <span class="n">method</span> <span class="n">sets</span> <span class="n">the</span> <span class="n">presentedViewController</span> <span class="n">property</span> <span class="n">to</span> <span class="n">the</span> <span class="n">specified</span> <span class="n">view</span> <span class="n">controller</span><span class="p">,</span> <span class="n">resizes</span> <span class="n">that</span> <span class="n">view</span> <span class="n">controller</span><span class="err">&#39;</span><span class="n">s</span> <span class="n">view</span> <span class="n">based</span> <span class="n">on</span> <span class="n">the</span> <span class="n">presentation</span> <span class="n">style</span> <span class="n">and</span> <span class="n">then</span> <span class="n">adds</span> <span class="n">the</span> <span class="n">view</span> <span class="n">to</span> <span class="n">the</span> <span class="n">view</span> <span class="n">hierarchy</span><span class="o">**</span><span class="p">.</span> <span class="n">The</span> <span class="n">view</span> <span class="n">is</span> <span class="n">animated</span> <span class="n">onscreen</span> <span class="n">according</span> <span class="n">to</span> <span class="n">the</span> <span class="n">transition</span> <span class="n">style</span> <span class="n">specified</span> <span class="k">in</span> <span class="n">the</span> <span class="n">modalTransitionStyle</span> <span class="n">property</span> <span class="n">of</span> <span class="n">the</span> <span class="n">presented</span> <span class="n">view</span> <span class="n">controller</span><span class="p">.</span>
-<span class="o">**</span><span class="n">The</span> <span class="n">completion</span> <span class="n">handler</span> <span class="n">is</span> <span class="n">called</span> <span class="n">after</span> <span class="n">the</span> <span class="nl">viewDidAppear</span><span class="p">:</span> <span class="n">method</span> <span class="n">is</span> <span class="n">called</span> <span class="n">on</span> <span class="n">the</span> <span class="n">presented</span> <span class="n">view</span> <span class="n">controller</span><span class="p">.</span><span class="o">**</span></code></pre></div>
+<p><code>Presents a view controller modally.
+In a horizontally compact environment, the presented view is always full screen. In a horizontally regular environment, the presentation depends on the value in the modalPresentationStyle property.
+**This method sets the presentedViewController property to the specified view controller, resizes that view controller's view based on the presentation style and then adds the view to the view hierarchy**. The view is animated onscreen according to the transition style specified in the modalTransitionStyle property of the presented view controller.
+**The completion handler is called after the viewDidAppear: method is called on the presented view controller.**
+</code></p>
 
-<p><strong>presentedViewController</strong>属性是在该方法中设置的,并且是在<strong>viewDidAppear</strong>之后完成的。经过测试就发现,只有在<strong>viewDidLoad</strong>完成之后,才会对指定的视图控制器设置该属性。因此调用的时候需要注意。</p>
+<p><strong>presentedViewController</strong>属性是在该方法中设置的,并且是在<strong>viewDidAppear</strong>之后完成的。经过测试就发现,只有在<strong>viewDidLoad</strong>完成之后,模态视图完成加载后,才会对指定的视图控制器设置该属性。</p>
+
+<p>因此调用的时候需要注意该情况:<strong>如果在新的视图模态加载未完成前,获取当前的视图控制器可能就会存在问题</strong></p>
 
 <p>此外,同样的,如果该视图正在调用<strong>dismissViewControllerAnimated:completion</strong>方法呢？其实我们可以看下下面的几个API:</p>
 
@@ -213,10 +216,8 @@
     <span class="n">NSLog</span><span class="p">(</span><span class="s">@&quot;start find from : %@&quot;</span><span class="p">,</span><span class="n">viewController</span><span class="p">);</span>
     <span class="c1">// 查找模态</span>
     <span class="bp">UIViewController</span> <span class="o">*</span><span class="n">topPresentedViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">self</span> <span class="k">class</span><span class="p">]</span> <span class="nl">szl_topPresentedViewControllerFromViewController</span><span class="p">:</span><span class="n">viewController</span><span class="p">];</span>
-    
     <span class="c1">// 查找最前视图</span>
     <span class="bp">UIViewController</span> <span class="o">*</span><span class="n">currentTopViewController</span> <span class="o">=</span> <span class="p">[[</span><span class="nb">self</span> <span class="k">class</span><span class="p">]</span> <span class="nl">szl_topViewControllerFromViewController</span><span class="p">:</span><span class="n">topPresentedViewController</span><span class="p">];</span>
-    
 	<span class="c1">// 当前页面正在移除的情况下 即将消失</span>
 	<span class="k">if</span> <span class="p">([</span><span class="n">currentTopViewController</span> <span class="n">isBeingDismissed</span><span class="p">]</span> <span class="o">||</span> <span class="p">[</span><span class="n">currentTopViewController</span> <span class="n">isMovingFromParentViewController</span><span class="p">])</span>
 	<span class="p">{</span>
@@ -235,11 +236,12 @@
 
 <p>你看,简单的获取当前最前页,写了这么多的代码,但我们依然不能完全肯定没有遗落之处。比如session异常的通知,很有可能在任何状态下发生!那么,有没有更好的方式？</p>
 
-<p>其实视图的跳转,都是在主线程上一个视图控制器被添加到当前窗口上,当前的视图,会调用<strong>viewWillAppear</strong>和<strong>viewDidAppear</strong>,那为何不直接用一静态全局变量指定当前的视图控制器?为了避免每个类中进行调用,可以考虑使用<strong>Method Swizzling</strong>来获取当前的视图控制器.其次再根据模态情况下进行处理。这样避免了方法一种繁琐的递归查找,效率更高。</p>
+<p>其实视图的跳转,都是在主线程上一个视图控制器被添加到当前窗口上,当前的视图,会调用<strong>viewWillAppear</strong>和<strong>viewDidAppear</strong>,那可以直接用一全局变量指定当前的视图控制器?为了避免每个类中进行调用,可以考虑使用<strong>Method Swizzling</strong>来获取当前的视图控制器.其次再根据模态情况下进行处理。这样避免了方法一种繁琐的递归查找,效率更高。</p>
 
 <div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="p">-</span> <span class="p">(</span><span class="kt">void</span><span class="p">)</span><span class="nf">szl_viewDidAppear:</span><span class="p">(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nv">animated</span>
 <span class="p">{</span>
     <span class="bp">NSString</span> <span class="o">*</span><span class="n">classname</span> <span class="o">=</span> <span class="n">NSStringFromClass</span><span class="p">([</span><span class="nb">self</span> <span class="k">class</span><span class="p">]);</span>
+    <span class="c1">// 需要过滤 筛选</span>
     <span class="k">if</span> <span class="p">([</span><span class="n">classname</span> <span class="nl">hasPrefix</span><span class="p">:</span><span class="s">@&quot;SZL&quot;</span><span class="p">])</span>
     <span class="p">{</span>
         <span class="n">curViewController</span> <span class="o">=</span> <span class="nb">self</span><span class="p">;</span>
@@ -264,7 +266,7 @@
     <span class="p">}</span>
 <span class="p">}</span></code></pre></div>
 
-<p>该load实现参考stackoverflow上的实现。在交互方法中,增加了一步前缀判断。此外,对于特殊的系统视图控制器比如相册、拍照等也需要考虑进来。获取到后,再根据方法一的后续判断进行处理。</p>
+<p>该load实现参考stackoverflow上的实现。在交互方法中,增加了一步前缀判断。此外,对于特殊的系统视图控制器比如相册、拍照等也需要考虑进来。当然,获取到后,还是需要再根据方法一的后续判断进行处理,这就不同的业务规则了。</p>
 
 <h3 id="section-1">跳转</h3>
 <p>关于跳转,很多时候我们需要处理复杂的页面跳转。比如session异常的情况,业务设计需要不管在任何页面,你需要先回到UITabbarViewConroller的当前页,再模态一个登录视图控制器提示用户进行登录操作。该怎么设计呢??基本上思路是这样子的:</p>
@@ -284,17 +286,17 @@
 <p>意识是说当存在多个模态的视图控制器构成的堆栈里,只要在这个堆栈里找到低层级的模态视图调用<strong>dismiss</strong>,在它之上的缘由视图控制器都会移除。
 这里需要注意的是,如果使用<strong>UITabbarViewController</strong>,比如在它的<strong>selectedViewController</strong>控制器A上,模态一个视图控制器B,那么A的<strong>presentedViewController</strong>指向B是没有错的,但B的<strong>presentingViewController</strong>指向的不是A,而是<strong>UITabbarViewController</strong>。因此这里的方法大概是这样子的:</p>
 
-<p>UITabBarController <em>tabbarViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
-UIViewController   *selectViewController = root.selectedViewController;
-[tabbarViewController dismissViewControllerAnimated:YES completion:^{
-       dispatch_async(dispatch_get_main_queue(), ^{
-           [(UINavigationController</em>)selectViewController popToRootViewControllerAnimated:NO];
-           usleep(5000);
-           [selectViewController presentViewController:[SZLAssemblingFactory YSNavigationwithLoginViewController] 
-           									      animated:YES 
-           									    completion:nil];
-       });
-}];</p>
+<div class="highlight"><pre><code class="language-objective-c" data-lang="objective-c"><span class="bp">UITabBarController</span> <span class="o">*</span><span class="n">tabbarViewController</span> <span class="o">=</span> <span class="p">[</span><span class="bp">UIApplication</span> <span class="n">sharedApplication</span><span class="p">].</span><span class="n">keyWindow</span><span class="p">.</span><span class="n">rootViewController</span><span class="p">;</span>
+<span class="bp">UIViewController</span>   <span class="o">*</span><span class="n">selectViewController</span> <span class="o">=</span> <span class="n">root</span><span class="p">.</span><span class="n">selectedViewController</span><span class="p">;</span>
+<span class="p">[</span><span class="n">tabbarViewController</span> <span class="nl">dismissViewControllerAnimated</span><span class="p">:</span><span class="nb">YES</span> <span class="nl">completion</span><span class="p">:</span><span class="o">^</span><span class="p">{</span>
+       <span class="n">dispatch_async</span><span class="p">(</span><span class="n">dispatch_get_main_queue</span><span class="p">(),</span> <span class="o">^</span><span class="p">{</span>
+           <span class="p">[(</span><span class="bp">UINavigationController</span><span class="o">*</span><span class="p">)</span><span class="n">selectViewController</span> <span class="nl">popToRootViewControllerAnimated</span><span class="p">:</span><span class="o">^</span><span class="p">(){</span>
+            <span class="p">[</span><span class="n">selectViewController</span> <span class="nl">presentViewController</span><span class="p">:[</span><span class="n">SZLAssemblingFactory</span> <span class="n">YSNavigationwithLoginViewController</span><span class="p">]</span> 
+           									      <span class="nl">animated</span><span class="p">:</span><span class="nb">YES</span> 
+           									    <span class="nl">completion</span><span class="p">:</span><span class="nb">nil</span><span class="p">];</span>
+           <span class="p">}];</span>          
+       <span class="p">});</span>
+<span class="p">}];</span></code></pre></div>
 
 
   </article>
