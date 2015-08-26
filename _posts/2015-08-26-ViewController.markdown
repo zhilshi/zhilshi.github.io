@@ -7,7 +7,7 @@ categories: iOS
 
 最近在项目中，遇到导航跳转相关的各种复杂逻辑。下面介绍一些个人在开发中的一些思路，希望有所帮助。
 
-###获取当前的视图控制器
+##获取当前的视图控制器
 大多时候，我们需要知道当前的视图控制器是啥。通常在点击推送消息跳转、session异常退出登录等情况下，需要知道当前在哪一个视图控制器上，才可以进行线框跳转。那么，如何获取呢？第一反应，这不是很简单？直接从rootViewController找起来，找到topViewController.
 比如:
 {% highlight objective-c linenos %}
@@ -209,8 +209,8 @@ In a horizontally compact environment, the presented view is always full screen.
 {% endhighlight %}	
 该load实现参考stackoverflow上的实现。在交互方法中,增加了一步前缀判断。此外,对于特殊的系统视图控制器比如相册、拍照等也需要考虑进来。当然,获取到后,还是需要再根据方法一的后续判断进行处理,这就不同的业务规则了。
 
-###跳转
-关于跳转,很多时候我们需要处理复杂的页面跳转。比如session异常的情况,业务设计需要不管在任何页面,你需要先回到UITabbarViewConroller的当前页,再模态一个登录视图控制器提示用户进行登录操作。该怎么设计呢??基本上思路是这样子的:
+##跳转
+关于跳转,很多时候我们需要处理复杂的页面跳转。比如我遇到的情况是,在session异常的情况下,业务设计需要不管在任何页面,你需要先回到UITabbarViewConroller的当前页,再模态一个登录视图控制器提示用户进行登录操作。该怎么设计呢??基本上思路是这样子的:
 
 1. 所有的模态视图控制器移除,直到selectedViewController
 2. 在selectedViewController上popToRootViewController
@@ -240,3 +240,8 @@ UIViewController   *selectViewController = root.selectedViewController;
 
 {% endhighlight %}
 
+先到这里,后续补充...
+如果有同学更好的方式或者遇到相关的问题,都可以通过邮件的方式或者QQ进行沟通。
+
+邮件:561120823@qq.com
+QQ:561120823
