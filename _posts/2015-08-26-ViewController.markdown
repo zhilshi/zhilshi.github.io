@@ -30,6 +30,9 @@ categories: iOS
     return rootViewController;
 }
 {% endhighlight %}	
+
+上面分别针对根视图控制器是**UITabBarController**还是** UINavigationController**进行区分判断。
+
 **等等,考虑这么简单？模态呢？**,我们知道，可以连续有多个模态的导航控制器。
 因此,针对多次模态的情况,代码大概是长这样子的:
 {% highlight objective-c linenos %}
@@ -107,9 +110,6 @@ categories: iOS
 其次,根据这时获取的视图控制器,可能是一个导航视图控制器(基本上是导航控制器),但也有可能是视图控制器。通过**szl_topPresentedViewControllerFromViewController**方法寻找最顶层的模态视图控制器。可以看到这是一个递归方法,天知道复杂的应用里会有多少层模态呢？这里注意,如果一开始就不存在模态,还是会返回出传入的对象。
 
 最后,根据获取到的视图控制器,有可能是一个导航视图控制器,也有可能是一个视图控制器,因此通过方法**szl_topViewControllerFromViewController**获取最终的当前视图控制器。
-
-需要注意的是,由于**presentedViewController**取值操作,因此获取方法需要在视图控制器**viewWillAppear**之后调用.
-回头一看，看上去是没什么问题了?基本上确实是可以实现功能。
 
 但是,我们看到整个方法的实现,最主要的还是基于视图控制器**presentedViewController**的属性。
 
@@ -199,10 +199,10 @@ In a horizontally compact environment, the presented view is always full screen.
     }
 }
 {% endhighlight %}	
-该load实现参考stackoverflow上的实现。在交互方法中,增加了一步前缀判断。此外,对于特殊的系统视图控制器比如相册、拍照等也需要考虑进来。当然,获取到后,还是需要再根据方法一的后续判断进行处理,这就不同的业务规则了。
+该load实现参考stackoverflow上的实现。在交互方法中,增加了一步前缀判断。此外,对于特殊的系统视图控制器比如相册、拍照等也需要考虑进来,进行适当的筛选。当然,获取到后,还是需要再根据方法一的后续判断进行处理,这就不同的业务不同的处理规则了。
 
 ##跳转
-关于跳转,很多时候我们需要处理复杂的页面跳转。比如我遇到的情况是,在session异常的情况下,业务设计需要不管在任何页面,你需要先回到UITabbarViewConroller的当前页,再模态一个登录视图控制器提示用户进行登录操作。该怎么设计呢??基本上思路是这样子的:
+关于跳转,很多时候我们需要处理复杂的页面跳转。比如我遇到的情况是:在session异常的情况下,业务设计需要不管在任何页面,你需要先回到UITabbarController的当前页,再模态一个登录视图控制器提示用户进行登录操作。该怎么设计呢??基本上思路是这样子的:
 
 1. 所有的模态视图控制器移除,直到selectedViewController
 2. 在selectedViewController上popToRootViewController
@@ -215,7 +215,7 @@ In a horizontally compact environment, the presented view is always full screen.
   the stack.`
 	
 意识是说当存在多个模态的视图控制器构成的堆栈里,只要在这个堆栈里找到低层级的模态视图调用**dismiss**,在它之上的缘由视图控制器都会移除。
-这里需要注意的是,如果使用**UITabbarViewController**,比如在它的**selectedViewController**控制器A上,模态一个视图控制器B,那么A的**presentedViewController**指向B是没有错的,但B的**presentingViewController**指向的不是A,而是**UITabbarViewController**。因此这里的方法大概是这样子的:
+这里需要注意的是,如果使用**UITabbarController**,比如在它的**selectedViewController**控制器A上,模态一个视图控制器B,那么A的**presentedViewController**指向B是没有错的,但B的**presentingViewController**指向的不是A,而是**UITabbarController**。因此这里的方法大概是这样子的:
 {% highlight objective-c %}
 
 UITabBarController *tabbarViewController = [UIApplication sharedApplication].keyWindow.rootViewController;
